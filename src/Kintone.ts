@@ -1,3 +1,17 @@
+interface App {
+  id: string;
+  token: string;
+}
+
+export interface Apps {
+  cards: App;
+  labels: App;
+  members: App;
+  lists: App;
+  baseUrl: string;
+  defaultKintoneUserCode: string;
+}
+
 interface AppFieldIDs {
   [key: string]: string;
 }

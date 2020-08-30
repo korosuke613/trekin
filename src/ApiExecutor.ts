@@ -1,4 +1,4 @@
-import { CardApp, LabelApp, ListApp, MemberApp } from "./AppFieldIDs";
+import { CardApp, LabelApp, ListApp, MemberApp } from "./Kintone";
 import { Data, ListShort } from "./Trello";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 
@@ -8,7 +8,7 @@ import { KintoneRestAPIClient } from "@kintone/rest-api-client";
  * @param appId
  * @param data
  */
-export const getRecordIdFromCard = async (
+const getRecordIdFromCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -37,7 +37,7 @@ export const getRecordIdFromCard = async (
  * @param appId
  * @param data
  */
-export const getRecordIdFromList = async (
+const getRecordIdFromList = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -71,7 +71,7 @@ export const getRecordIdFromList = async (
  * @param appId
  * @param data
  */
-export const getRecordIdFromLabelOfSame = async (
+const getRecordIdFromLabelOfSame = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -100,7 +100,7 @@ export const getRecordIdFromLabelOfSame = async (
  * @param appId
  * @param data
  */
-export const getKintoneUserCode = async (
+const getKintoneUserCode = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -134,11 +134,11 @@ export const getKintoneUserCode = async (
  * @param appId
  * @param data
  */
-export const getKintoneUserCodesOfSetted = async (
+const getKintoneUserCodesOfSetted = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
-): Promise<string[] | undefined> => {
+): Promise<string[]> => {
   const cardId = data.card.id;
   const res = await client.record.getRecords({
     app: appId,
@@ -146,7 +146,7 @@ export const getKintoneUserCodesOfSetted = async (
     query: `${CardApp.id}="${cardId}"`,
   });
   if (res.records.length === 0) {
-    return undefined;
+    return [];
   }
   const members = res.records[0][CardApp.member].value as Array<{
     code: string;
@@ -164,7 +164,7 @@ export const getKintoneUserCodesOfSetted = async (
  * @param appId
  * @param data
  */
-export const getRecordIdAndLabelIdsFromCard = async (
+const getRecordIdAndLabelIdsFromCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -193,7 +193,7 @@ export const getRecordIdAndLabelIdsFromCard = async (
   return { recordId, tableIds };
 };
 
-export const addMember = async (
+const addMember = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data,
@@ -226,7 +226,7 @@ export const addMember = async (
   return addRecordParam;
 };
 
-export const createCard = async (
+const createCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -258,7 +258,7 @@ export const createCard = async (
   return addRecordParam;
 };
 
-export const updateCard = async (
+const updateCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data,
@@ -284,7 +284,7 @@ export const updateCard = async (
   return record;
 };
 
-export const updateList = async (
+const updateList = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data,
@@ -308,7 +308,7 @@ export const updateList = async (
   return record;
 };
 
-export const createList = async (
+const createList = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -332,7 +332,7 @@ export const createList = async (
   return params;
 };
 
-export const createLabel = async (
+const createLabel = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
@@ -357,7 +357,7 @@ export const createLabel = async (
   return params;
 };
 
-export const updateLabel = async (
+const updateLabel = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data,
@@ -382,7 +382,7 @@ export const updateLabel = async (
   return params;
 };
 
-export const addLabelToCard = async (
+const addLabelToCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data,
@@ -413,7 +413,7 @@ export const addLabelToCard = async (
   return params;
 };
 
-export const addMemberToCard = async (
+const addMemberToCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   cardID: string,
@@ -441,7 +441,7 @@ export const addMemberToCard = async (
   return params;
 };
 
-export const removeMemberFromCard = async (
+const removeMemberFromCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   cardID: string,
@@ -466,4 +466,23 @@ export const removeMemberFromCard = async (
   };
   await client.record.updateRecord(params);
   return params;
+};
+
+export const ApiExecutor = {
+  createCard,
+  updateCard,
+  createLabel,
+  updateLabel,
+  createList,
+  updateList,
+  addMember,
+  addLabelToCard,
+  addMemberToCard,
+  getRecordIdFromCard,
+  getKintoneUserCode,
+  getKintoneUserCodesOfSetted,
+  getRecordIdAndLabelIdsFromCard,
+  getRecordIdFromLabelOfSame,
+  removeMemberFromCard,
+  getRecordIdFromList,
 };

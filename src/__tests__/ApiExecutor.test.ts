@@ -1,26 +1,9 @@
 /* eslint-disable no-loop-func */
 
-import {
-  addLabelToCard,
-  addMember,
-  addMemberToCard,
-  createCard,
-  createLabel,
-  createList,
-  getKintoneUserCode,
-  getKintoneUserCodesOfSetted,
-  getRecordIdAndLabelIdsFromCard,
-  getRecordIdFromCard,
-  getRecordIdFromLabelOfSame,
-  getRecordIdFromList,
-  removeMemberFromCard,
-  updateCard,
-  updateLabel,
-  updateList,
-} from "../ApiExecutor";
+import { ApiExecutor } from "../ApiExecutor";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 import { Data } from "../Trello";
-import { CardApp, LabelApp, ListApp, MemberApp } from "../AppFieldIDs";
+import { CardApp, LabelApp, ListApp, MemberApp } from "../Kintone";
 
 jest.mock("@kintone/rest-api-client");
 
@@ -63,7 +46,7 @@ describe("getRecordIdFromCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await getRecordIdFromCard(k, "", {
+      const actual = await ApiExecutor.getRecordIdFromCard(k, "", {
         card: { id: "" },
       } as Data);
       expect(actual).toEqual(expected);
@@ -150,7 +133,11 @@ describe("getRecordIdFromListのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await getRecordIdFromList(k, "", input as Data);
+      const actual = await ApiExecutor.getRecordIdFromList(
+        k,
+        "",
+        input as Data
+      );
       expect(actual).toEqual(expected);
     });
   }
@@ -193,7 +180,7 @@ describe("getRecordIdFromLabelOfSameのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await getRecordIdFromLabelOfSame(k, "", {
+      const actual = await ApiExecutor.getRecordIdFromLabelOfSame(k, "", {
         label: { id: "" },
       } as Data);
       expect(actual).toEqual(expected);
@@ -246,7 +233,7 @@ describe("getKintoneUserCodeのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await getKintoneUserCode(k, "", {
+      const actual = await ApiExecutor.getKintoneUserCode(k, "", {
         member: { id: "" },
       } as Data);
       expect(actual).toEqual(expected);
@@ -286,7 +273,7 @@ describe("getKintoneUserCodesOfSettedのテスト", () => {
       mockReturn: {
         records: [],
       },
-      expected: undefined,
+      expected: [],
     },
   ];
 
@@ -303,7 +290,7 @@ describe("getKintoneUserCodesOfSettedのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await getKintoneUserCodesOfSetted(k, "", {
+      const actual = await ApiExecutor.getKintoneUserCodesOfSetted(k, "", {
         card: { id: "" },
       } as Data);
       expect(actual).toEqual(expected);
@@ -354,7 +341,7 @@ describe("getRecordIdAndLabelIdsFromCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await getRecordIdAndLabelIdsFromCard(k, "", {
+      const actual = await ApiExecutor.getRecordIdAndLabelIdsFromCard(k, "", {
         card: { id: "" },
       } as Data);
       expect(actual).toEqual(expected);
@@ -393,7 +380,7 @@ describe("addMemberのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await addMember(
+      const actual = await ApiExecutor.addMember(
         k,
         "appId",
         {
@@ -451,7 +438,7 @@ describe("createCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await createCard(k, "appId", input as Data);
+      const actual = await ApiExecutor.createCard(k, "appId", input as Data);
       expect(actual).toEqual(expected);
     });
   }
@@ -499,7 +486,12 @@ describe("updateCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await updateCard(k, "appId", input1 as Data, input2);
+      const actual = await ApiExecutor.updateCard(
+        k,
+        "appId",
+        input1 as Data,
+        input2
+      );
       expect(actual).toEqual(expected);
     });
   }
@@ -544,7 +536,7 @@ describe("createListのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await createList(k, "appId", input as Data);
+      const actual = await ApiExecutor.createList(k, "appId", input as Data);
       expect(actual).toEqual(expected);
     });
   }
@@ -590,7 +582,12 @@ describe("updateListのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await updateList(k, "appId", input1 as Data, input2);
+      const actual = await ApiExecutor.updateList(
+        k,
+        "appId",
+        input1 as Data,
+        input2
+      );
       expect(actual).toEqual(expected);
     });
   }
@@ -625,7 +622,7 @@ describe("createLabelのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await createLabel(k, "appId", input as Data);
+      const actual = await ApiExecutor.createLabel(k, "appId", input as Data);
       expect(actual).toEqual(expected);
     });
   }
@@ -663,7 +660,12 @@ describe("updateLabelのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await updateLabel(k, "appId", input1 as Data, input2);
+      const actual = await ApiExecutor.updateLabel(
+        k,
+        "appId",
+        input1 as Data,
+        input2
+      );
       expect(actual).toEqual(expected);
     });
   }
@@ -711,7 +713,7 @@ describe("addLabelToCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await addLabelToCard(
+      const actual = await ApiExecutor.addLabelToCard(
         k,
         "appId",
         input1 as Data,
@@ -762,7 +764,13 @@ describe("addMemberToCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await addMemberToCard(k, input1, input2, input3, input4);
+      const actual = await ApiExecutor.addMemberToCard(
+        k,
+        input1,
+        input2,
+        input3,
+        input4
+      );
       expect(actual).toEqual(expected);
     });
   }
@@ -804,7 +812,7 @@ describe("removeMemberFromCardのテスト", () => {
       });
       const k = new KintoneMock();
 
-      const actual = await removeMemberFromCard(
+      const actual = await ApiExecutor.removeMemberFromCard(
         k,
         input1,
         input2,
