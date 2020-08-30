@@ -36,7 +36,7 @@ export interface Board {
 }
 
 export interface Data {
-  card: CardShort;
+  card: CardShort | Card;
   list?: ListShort;
   listAfter?: ListShort;
   label: Label;

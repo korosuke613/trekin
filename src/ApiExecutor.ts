@@ -1,5 +1,5 @@
 import { CardApp, LabelApp, ListApp, MemberApp } from "./AppFieldIDs";
-import { Data } from "./Trello";
+import { Data, ListShort } from "./Trello";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 
 /**
@@ -191,4 +191,279 @@ export const getRecordIdAndLabelIdsFromCard = async (
   );
 
   return { recordId, tableIds };
+};
+
+export const addMember = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  kintoneUserId: string
+) => {
+  const memberId = data.member.id;
+  const memberName = data.member.name;
+  const addRecordParam = {
+    app: appId,
+    record: {
+      [MemberApp.trelloId]: {
+        value: memberId,
+      },
+      [MemberApp.name]: {
+        value: memberName,
+      },
+      [MemberApp.kintoneUser]: {
+        value: [
+          {
+            code: kintoneUserId,
+          },
+        ],
+      },
+    },
+  };
+  await client.record.addRecord(addRecordParam).then((event) => {
+    console.info("EVENT\n" + event.id, event.revision);
+  });
+
+  return addRecordParam;
+};
+
+export const createCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+) => {
+  const addRecordParam = {
+    app: appId,
+    record: {
+      [CardApp.name]: {
+        value: data.card.text,
+      },
+      [CardApp.id]: {
+        value: data.card.id,
+      },
+      [CardApp.link]: {
+        value: `https://trello.com/c/${data.card.shortLink}`,
+      },
+    },
+  };
+  if (Object.prototype.hasOwnProperty.call(data, "list")) {
+    addRecordParam.record[CardApp.idList] = {
+      value: (data.list as ListShort).id,
+    };
+  }
+
+  await client.record.addRecord(addRecordParam).then((event) => {
+    console.info("EVENT\n" + event.id, event.revision);
+  });
+
+  return addRecordParam;
+};
+
+export const updateCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  recordId: string
+) => {
+  const record: {
+    [key: string]: { value: any };
+  } = {};
+  for (const [key] of Object.entries(data.old)) {
+    record[CardApp[key]] = { value: data.card[key] };
+  }
+
+  await client.record
+    .updateRecord({
+      app: appId,
+      id: recordId,
+      record: record,
+    })
+    .then((event) => {
+      console.info(`EVENT\nRevision: ${event.revision}`);
+    });
+
+  return record;
+};
+
+export const updateList = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  recordId: string
+) => {
+  const record: { [key: string]: { value: any } } = {};
+  for (const [key] of Object.entries(data.old)) {
+    record[ListApp[key]] = {
+      value: (data.list as ListShort)[key],
+    };
+  }
+  await client.record
+    .updateRecord({
+      app: appId,
+      id: recordId,
+      record: record,
+    })
+    .then((event) => {
+      console.info(`EVENT\nRevision: ${event.revision}`);
+    });
+  return record;
+};
+
+export const createList = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+) => {
+  const listValue = typeof data.list === "object" ? data.list : data.listAfter;
+  const params = {
+    app: appId,
+    record: {
+      NAME: {
+        value: listValue?.name,
+      },
+      ID: {
+        value: listValue?.id,
+      },
+    },
+  };
+  await client.record.addRecord(params).then((event) => {
+    console.info("EVENT\n" + event.id, event.revision);
+  });
+
+  return params;
+};
+
+export const createLabel = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+) => {
+  const params = {
+    app: appId,
+    record: {
+      [LabelApp.id]: {
+        value: data.label.id,
+      },
+      [LabelApp.name]: {
+        value: data.label.name,
+      },
+      [LabelApp.color]: {
+        value: data.label.color,
+      },
+    },
+  };
+  await client.record.addRecord(params).then((event) => {
+    console.info("EVENT\n" + event.id, event.revision);
+  });
+  return params;
+};
+
+export const updateLabel = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  sameLabelId: string
+) => {
+  const params = {
+    app: appId,
+    id: sameLabelId,
+    record: {
+      [LabelApp.name]: {
+        value: data.label.name,
+      },
+      [LabelApp.color]: {
+        value: data.label.color,
+      },
+    },
+  };
+  await client.record.updateRecord(params).then((event) => {
+    console.info(`EVENT\nRevision: ${event.revision}`);
+  });
+
+  return params;
+};
+
+export const addLabelToCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  recordId: string,
+  tableIds: string[]
+) => {
+  const tableRecords: any[] = tableIds.map((id) => {
+    return {
+      id: id.toString(),
+    };
+  });
+  tableRecords.push({
+    value: {
+      [CardApp.labelId]: data.label.id,
+    },
+  });
+  const params = {
+    app: appId,
+    id: recordId,
+    record: {
+      [CardApp.labelTable]: {
+        value: tableRecords,
+      },
+    },
+  };
+  await client.record.updateRecord(params);
+
+  return params;
+};
+
+export const addMemberToCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  cardID: string,
+  kintoneUserCode: string,
+  kintoneUserCodesOfSetted: string[]
+) => {
+  const memberCodesWithJSON: any[] = kintoneUserCodesOfSetted.map((code) => {
+    return {
+      code: code.toString(),
+    };
+  });
+  memberCodesWithJSON.push({
+    code: kintoneUserCode,
+  });
+  const params = {
+    app: appId,
+    id: cardID,
+    record: {
+      [CardApp.member]: {
+        value: memberCodesWithJSON,
+      },
+    },
+  };
+  await client.record.updateRecord(params);
+  return params;
+};
+
+export const removeMemberFromCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  cardID: string,
+  kintoneUserCode: string,
+  kintoneUserCodesOfSetted: string[]
+) => {
+  const memberCodesWithJSON: any[] = kintoneUserCodesOfSetted
+    .filter((code) => code.toString() !== kintoneUserCode)
+    .map((code) => {
+      return {
+        code: code.toString(),
+      };
+    });
+  const params = {
+    app: appId,
+    id: cardID,
+    record: {
+      [CardApp.member]: {
+        value: memberCodesWithJSON,
+      },
+    },
+  };
+  await client.record.updateRecord(params);
+  return params;
 };
