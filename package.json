@@ -1,16 +1,15 @@
 {
   "name": "trekin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A library that connects Trello to kintone",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
     "lint:eslint": "eslint 'src/**/*.ts'",
     "lint:fix": "npm run lint:eslint -- --fix",
     "test": "jest",
-    "test:coverage": "jest --coverage",
-    "publish": "npm run build && npm publish"
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -26,6 +25,9 @@
     "url": "https://github.com/korosuke613/trekin/issues"
   },
   "homepage": "https://github.com/korosuke613/trekin#readme",
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "@kintone/rest-api-client": "^1.5.0",
     "source-map-support": "^0.5.19"
