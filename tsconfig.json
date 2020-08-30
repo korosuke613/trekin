@@ -9,12 +9,15 @@
     "target": "es2017",
     "outDir": "lib",
     "strict": true,
-    "allowSyntheticDefaultImports": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true
   },
   "include": ["./**/*.ts"],
   "exclude": [
     "node_modules/**/*",
     ".webpack/**/*",
-    "_warmup/**/*"
+    "_warmup/**/*",
+    "lib/**/*"
   ]
 }

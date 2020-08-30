@@ -1,1 +1,2 @@
-export { Trekin } from "./src/Trekin";
+// @ts-ignore
+export * from "./src/Trekin";
