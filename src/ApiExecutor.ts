@@ -1,6 +1,6 @@
-import {CardApp, LabelApp, ListApp, MemberApp} from "./AppFieldIDs";
-import {Data} from "./Trello";
-import {KintoneRestAPIClient} from "@kintone/rest-api-client";
+import { CardApp, LabelApp, ListApp, MemberApp } from "./AppFieldIDs";
+import { Data } from "./Trello";
+import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 
 /**
  * Cardアプリからtrelloのカードに一致するレコードIDを取得する
@@ -8,21 +8,28 @@ import {KintoneRestAPIClient} from "@kintone/rest-api-client";
  * @param appId
  * @param data
  */
-export const getRecordIdFromCard = async (client: KintoneRestAPIClient, appId: string, data: Data): Promise<string | undefined> => {
-    const cardId = data.card.id
-    const res = await client.record.getRecords({
-        app: appId,
-        fields: ["$id"],
-        query: `${CardApp.id}="${cardId}"`
-    })
-    if (res.records.length === 0) {
-        return undefined
-    }
-    const recordId = res.records[0]["$id"].value !== null ? res.records[0]["$id"].value.toString(): ""
-    console.info(`EVENT\nRecord ID: ${recordId}`)
+export const getRecordIdFromCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<string | undefined> => {
+  const cardId = data.card.id;
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: ["$id"],
+    query: `${CardApp.id}="${cardId}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const recordId =
+    res.records[0].$id.value !== null
+      ? res.records[0].$id.value.toString()
+      : "";
+  console.info(`EVENT\nRecord ID: ${recordId}`);
 
-    return recordId
-}
+  return recordId;
+};
 
 /**
  * Listアプリからtrelloのリストに一致するレコードIDを取得する
@@ -30,26 +37,33 @@ export const getRecordIdFromCard = async (client: KintoneRestAPIClient, appId: s
  * @param appId
  * @param data
  */
-export const getRecordIdFromList = async (client: KintoneRestAPIClient, appId: string, data: Data): Promise<string | undefined> => {
-    const listValue = typeof data.list === "object" ? data.list : data.listAfter
+export const getRecordIdFromList = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<string | undefined> => {
+  const listValue = typeof data.list === "object" ? data.list : data.listAfter;
 
-    if(listValue === undefined){
-        return undefined
-    }
+  if (listValue === undefined) {
+    return undefined;
+  }
 
-    const res = await client.record.getRecords({
-        app: appId,
-        fields: ["$id"],
-        query: `${ListApp.id}="${listValue.id}"`
-    })
-    if (res.records.length === 0) {
-        return undefined
-    }
-    const recordId = res.records[0]["$id"].value !== null ? res.records[0]["$id"].value.toString(): ""
-    console.info(`EVENT\nRecord ID: ${recordId}`)
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: ["$id"],
+    query: `${ListApp.id}="${listValue.id}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const recordId =
+    res.records[0].$id.value !== null
+      ? res.records[0].$id.value.toString()
+      : "";
+  console.info(`EVENT\nRecord ID: ${recordId}`);
 
-    return recordId
-}
+  return recordId;
+};
 
 /**
  * ラベルアプリからラベルのIDを取得する
@@ -57,21 +71,28 @@ export const getRecordIdFromList = async (client: KintoneRestAPIClient, appId: s
  * @param appId
  * @param data
  */
-export const getRecordIdFromLabelOfSame = async (client: KintoneRestAPIClient, appId: string, data: Data): Promise<string | undefined> => {
-    const labelId = data.label.id
-    const res = await client.record.getRecords({
-        app: appId,
-        fields: ["$id"],
-        query: `${LabelApp.id}="${labelId}"`
-    })
-    if (res.records.length === 0) {
-        return undefined
-    }
-    const recordId = res.records[0]["$id"].value !== null ? res.records[0]["$id"].value.toString(): ""
-    console.info(`EVENT\nRecord ID: ${recordId}`)
+export const getRecordIdFromLabelOfSame = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<string | undefined> => {
+  const labelId = data.label.id;
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: ["$id"],
+    query: `${LabelApp.id}="${labelId}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const recordId =
+    res.records[0].$id.value !== null
+      ? res.records[0].$id.value.toString()
+      : "";
+  console.info(`EVENT\nRecord ID: ${recordId}`);
 
-    return recordId
-}
+  return recordId;
+};
 
 /**
  * trelloのIDに紐づいてるkintoneのユーザコードを取得する
@@ -79,23 +100,33 @@ export const getRecordIdFromLabelOfSame = async (client: KintoneRestAPIClient, a
  * @param appId
  * @param data
  */
-export const getKintoneUserCode = async (client: KintoneRestAPIClient, appId: string, data: Data): Promise<string | undefined> => {
-    const memberId = data.member.id
-    const res = await client.record.getRecords({
-        app: appId,
-        fields: [MemberApp.kintoneUser],
-        query: `${MemberApp.trelloId}="${memberId}"`
-    })
-    if (res.records.length === 0) {
-        return undefined
-    }
-    const kintoneUsers = res.records[0][MemberApp.kintoneUser].value as {code: string, name: string}[]
-    const kintoneUser = kintoneUsers !== null ? kintoneUsers[0] as {code: string, name: string} : {code: "", name: ""}
-    const kintoneUserCode = kintoneUser.code
-    console.info(`EVENT\nKINTONE_USER: ${kintoneUserCode}`)
+export const getKintoneUserCode = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<string | undefined> => {
+  const memberId = data.member.id;
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: [MemberApp.kintoneUser],
+    query: `${MemberApp.trelloId}="${memberId}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const kintoneUsers = res.records[0][MemberApp.kintoneUser].value as Array<{
+    code: string;
+    name: string;
+  }>;
+  const kintoneUser =
+    kintoneUsers !== null
+      ? (kintoneUsers[0] as { code: string; name: string })
+      : { code: "", name: "" };
+  const kintoneUserCode = kintoneUser.code;
+  console.info(`EVENT\nKINTONE_USER: ${kintoneUserCode}`);
 
-    return kintoneUserCode
-}
+  return kintoneUserCode;
+};
 
 /**
  * すでにアサインされているkintoneユーザのcodeを取得する
@@ -103,25 +134,29 @@ export const getKintoneUserCode = async (client: KintoneRestAPIClient, appId: st
  * @param appId
  * @param data
  */
-export const getKintoneUserCodesOfSetted = async (client: KintoneRestAPIClient, appId: string, data: Data): Promise<string[]|undefined> => {
-    const cardId = data.card.id
-    const res = await client.record.getRecords({
-        app: appId,
-        fields: [CardApp.member],
-        query: `${CardApp.id}="${cardId}"`
-    })
-    if (res.records.length === 0) {
-        return undefined
-    }
-    const members = res.records[0][CardApp.member].value as {code: string, name: string}[]
-    const memberCodes = members.map(x => x.code)
-    console.info(`EVENT\nMember Codes: ${memberCodes.toString()}`)
+export const getKintoneUserCodesOfSetted = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<string[] | undefined> => {
+  const cardId = data.card.id;
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: [CardApp.member],
+    query: `${CardApp.id}="${cardId}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const members = res.records[0][CardApp.member].value as Array<{
+    code: string;
+    name: string;
+  }>;
+  const memberCodes = members.map((x) => x.code);
+  console.info(`EVENT\nMember Codes: ${memberCodes.toString()}`);
 
-    return memberCodes
-}
-
-
-
+  return memberCodes;
+};
 
 /**
  * CardアプリからレコードIDとラベルIDを取得する
@@ -129,20 +164,31 @@ export const getKintoneUserCodesOfSetted = async (client: KintoneRestAPIClient, 
  * @param appId
  * @param data
  */
-export const getRecordIdAndLabelIdsFromCard = async (client: KintoneRestAPIClient, appId: string, data: Data): Promise<{ recordId: string, tableIds: Array<string> } | undefined> => {
-    const cardId = data.card.id
-    const res = await client.record.getRecords({
-        app: appId,
-        fields: ["$id", CardApp.labelTable],
-        query: `${CardApp.id}="${cardId}"`
-    })
-    if(res.records.length === 0){
-        return undefined
-    }
-    const recordId = res.records[0]["$id"].value !== null ? res.records[0]["$id"].value.toString(): ""
-    const labels = res.records[0][CardApp.labelTable].value as {id: string}[]
-    const tableIds = labels.map(x => x.id)
-    console.info(`EVENT\nRecord ID: ${recordId}\nTable IDs: ${tableIds.toString()}`)
+export const getRecordIdAndLabelIdsFromCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<{ recordId: string; tableIds: string[] } | undefined> => {
+  const cardId = data.card.id;
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: ["$id", CardApp.labelTable],
+    query: `${CardApp.id}="${cardId}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const recordId =
+    res.records[0].$id.value !== null
+      ? res.records[0].$id.value.toString()
+      : "";
+  const labels = res.records[0][CardApp.labelTable].value as Array<{
+    id: string;
+  }>;
+  const tableIds = labels.map((x) => x.id);
+  console.info(
+    `EVENT\nRecord ID: ${recordId}\nTable IDs: ${tableIds.toString()}`
+  );
 
-    return {recordId, tableIds}
-}
+  return { recordId, tableIds };
+};
