@@ -1,0 +1,42 @@
+{
+  "name": "trekin",
+  "version": "1.0.0",
+  "description": "A library that connects Trello to kintone",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korosuke613/trekin.git"
+  },
+  "keywords": [
+    "trello",
+    "kintone"
+  ],
+  "author": "Futa Hirakoba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/korosuke613/trekin/issues"
+  },
+  "homepage": "https://github.com/korosuke613/trekin#readme",
+  "dependencies": {
+    "@kintone/rest-api-client": "^1.5.0",
+    "source-map-support": "^0.5.19"
+  },
+  "devDependencies": {
+    "@cybozu/eslint-config": "^11.0.0",
+    "@types/jest": "^26.0.10",
+    "@types/node": "^14.6.0",
+    "fork-ts-checker-webpack-plugin": "^5.1.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "ts-loader": "^8.0.3",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1",
+    "webpack-node-externals": "^2.5.2"
+  }
+}
