@@ -31,8 +31,8 @@ jobs:
         with:
           name: coverage
           path: coverage
-      - name: Show coverage in comments
-        uses: ziishaned/jest-reporter-action@v0.0.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          test-command: "npm run jest --coverage"
+  - uses: codecov/codecov-action@v1
+    with:
+      token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+      directory: ./coverage/ # optional
+      fail_ci_if_error: true # optional (default = false)
