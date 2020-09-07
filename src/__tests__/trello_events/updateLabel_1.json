@@ -1,0 +1,49 @@
+{
+  "body": {
+    "action": {
+      "id": "5f1e7fa4f0ae8e3d7401d507",
+      "idMemberCreator": "5ecb263b62993c0d35798ec6",
+      "data": {
+        "old": {
+          "name": ""
+        },
+        "label": {
+          "name": "新しいラベルだ！",
+          "id": "5f02821bf1bb5752f63a5ae5",
+          "color": "yellow"
+        },
+        "board": {
+          "id": "5f02821bf3e65f322beb3ea4",
+          "name": "trello APIテスト",
+          "shortLink": "Sqsia9EM"
+        }
+      },
+      "type": "updateLabel",
+      "date": "2020-07-27T07:17:56.922Z",
+      "limits": {},
+      "display": {
+        "translationKey": "unknown",
+        "entities": {
+          "memberCreator": {
+            "type": "member",
+            "id": "5ecb263b62993c0d35798ec6",
+            "username": "korosuke613",
+            "text": "Futa Hirakoba (平木場 風太)"
+          }
+        }
+      },
+      "memberCreator": {
+        "id": "5ecb263b62993c0d35798ec6",
+        "username": "korosuke613",
+        "activityBlocked": false,
+        "avatarHash": "afe1dce94ee1d794699a96d03c560dee",
+        "avatarUrl": "https://trello-members.s3.amazonaws.com/5ecb263b62993c0d35798ec6/afe1dce94ee1d794699a96d03c560dee",
+        "fullName": "Futa Hirakoba",
+        "idMemberReferrer": "5e82ef3619774982716eb912",
+        "initials": "FH",
+        "nonPublic": {},
+        "nonPublicAvailable": true
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "body": {
+    "action": {
+      "id": "5f1590bb8a1a602edd449931",
+      "idMemberCreator": "5ecb263b62993c0d35798ec6",
+      "data": {
+        "card": {
+          "id": "5f1590bb8a1a602edd449930",
+          "name": "これは新しいカードです",
+          "idShort": 7,
+          "shortLink": "ceDVYykj"
+        },
+        "list": {
+          "id": "5f1e8b1ed6438e403c6f18fe",
+          "name": "ToDo"
+        },
+        "board": {
+          "id": "5f02821bf3e65f322beb3ea4",
+          "name": "trello APIテスト",
+          "shortLink": "Sqsia9EM"
+        }
+      },
+      "type": "createCard",
+      "date": "2020-07-20T12:40:27.652Z",
+      "limits": {},
+      "display": {
+        "translationKey": "action_create_card",
+        "entities": {
+          "card": {
+            "type": "card",
+            "id": "5f1590bb8a1a602edd449930",
+            "shortLink": "ceDVYykj",
+            "text": "これは新しいカードです"
+          },
+          "list": {
+            "type": "list",
+            "id": "5f1e8b1ed6438e403c6f18fe",
+            "text": "ToDo"
+          },
+          "memberCreator": {
+            "type": "member",
+            "id": "5ecb263b62993c0d35798ec6",
+            "username": "korosuke613",
+            "text": "Futa Hirakoba (平木場 風太)"
+          }
+        }
+      },
+      "memberCreator": {
+        "id": "5ecb263b62993c0d35798ec6",
+        "username": "korosuke613",
+        "activityBlocked": false,
+        "avatarHash": "afe1dce94ee1d794699a96d03c560dee",
+        "avatarUrl": "https://trello-members.s3.amazonaws.com/5ecb263b62993c0d35798ec6/afe1dce94ee1d794699a96d03c560dee",
+        "fullName": "Futa Hirakoba",
+        "idMemberReferrer": "5e82ef3619774982716eb912",
+        "initials": "FH",
+        "nonPublic": {},
+        "nonPublicAvailable": true
+      }
+    }
+  }
+}

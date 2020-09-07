@@ -397,7 +397,7 @@ describe("createCardのテスト", () => {
   const testcases = [
     {
       name: "RecordParamに入るべき値が正しい",
-      input: { card: { id: "id", text: "name", shortLink: "anyLink" } },
+      input: { card: { id: "id", name: "name", shortLink: "anyLink" } },
       expected: {
         app: "appId",
         record: {
@@ -410,7 +410,7 @@ describe("createCardのテスト", () => {
     {
       name: "trelloイベントにlistがあったらRecordParamにlistも入る",
       input: {
-        card: { id: "id", text: "name", shortLink: "anyLink" },
+        card: { id: "id", name: "name", shortLink: "anyLink" },
         list: { id: "listId" },
       },
       expected: {
