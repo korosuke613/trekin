@@ -1,8 +1,9 @@
 name: CI
 
 on:
-  push
-
+  push:
+    tags-ignore:
+      - 'v*'
 jobs:
   lint:
     name: lint
