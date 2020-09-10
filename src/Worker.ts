@@ -15,51 +15,52 @@ export class Worker {
     this.trelloAction = {} as Action;
   }
 
-  public async action(trelloAction: Action) {
+  public async action(
+    trelloAction: Action
+  ): Promise<
+    | {
+        app: string;
+        id?: string;
+        record: { [key: string]: { value: string | string[] | undefined } };
+      }
+    | { [key: string]: { value: string } }
+  > {
     this.trelloAction = trelloAction;
 
     switch (this.trelloAction.type) {
       case ActionType.CREATE_CARD: {
-        await this.createCard();
-        break;
+        return this.createCard();
       }
       case ActionType.UPDATE_CARD: {
-        await this.updateCard();
-        break;
+        return this.updateCard();
       }
       case ActionType.COPY_CARD: {
-        await this.copyCard();
-        break;
+        return this.copyCard();
       }
       case ActionType.CREATE_LIST: {
-        await this.createList();
-        break;
+        return this.createList();
       }
       case ActionType.UPDATE_LIST: {
-        await this.updateList();
-        break;
+        return this.updateList();
       }
       case ActionType.CREATE_LABEL: {
-        await this.createLabel();
-        break;
+        return this.createLabel();
       }
       case ActionType.UPDATE_LABEL: {
-        await this.updateLabel();
-        break;
+        return this.updateLabel();
       }
       case ActionType.ADD_LABEL_TO_CARD: {
-        await this.addLabelToCard();
-        break;
+        return this.addLabelToCard();
       }
       case ActionType.ADD_MEMBER_TO_CARD: {
-        await this.addMemberToCard();
-        break;
+        return this.addMemberToCard();
       }
       case ActionType.REMOVE_MEMBER_FROM_CARD: {
-        await this.removeMemberFromCard();
-        break;
+        return this.removeMemberFromCard();
       }
     }
+
+    return Promise.resolve({ app: "", record: {} });
   }
 
   async getCardRecordIdIfNotExistsCreateCard(client: KintoneRestAPIClient) {
@@ -106,7 +107,7 @@ export class Worker {
       this.apps.cards.token,
       this.apps.lists.token,
     ]);
-    await ApiExecutor.createCard(
+    return ApiExecutor.createCard(
       client,
       this.apps.cards.id,
       this.trelloAction.data
@@ -138,7 +139,7 @@ export class Worker {
     const cardRecordId = await this.getCardRecordIdIfNotExistsCreateCard(
       client
     );
-    await ApiExecutor.updateCard(
+    return ApiExecutor.updateCard(
       client,
       this.apps.cards.id,
       this.trelloAction.data,
@@ -150,28 +151,17 @@ export class Worker {
       this.apps.cards.token,
       this.apps.lists.token,
     ]);
-    await ApiExecutor.createCard(
+    return ApiExecutor.createCard(
       client,
       this.apps.cards.id,
       this.trelloAction.data
-    );
-    const cardRecordId = await ApiExecutor.getRecordIdFromCard(
-      client,
-      this.apps.cards.id,
-      this.trelloAction.data
-    );
-    await ApiExecutor.updateCard(
-      client,
-      this.apps.cards.id,
-      this.trelloAction.data,
-      cardRecordId as string
     );
   }
   async createList() {
     const client = await this.kintoneClientCreator.createKintoneClient(
       this.apps.lists.token
     );
-    await ApiExecutor.createList(
+    return ApiExecutor.createList(
       client,
       this.apps.lists.id,
       this.trelloAction.data
@@ -198,7 +188,7 @@ export class Worker {
         this.trelloAction.data
       );
     }
-    await ApiExecutor.updateList(
+    return ApiExecutor.updateList(
       client,
       this.apps.lists.id,
       this.trelloAction.data,
@@ -209,7 +199,7 @@ export class Worker {
     const client = await this.kintoneClientCreator.createKintoneClient(
       this.apps.labels.token
     );
-    await ApiExecutor.createLabel(
+    return ApiExecutor.createLabel(
       client,
       this.apps.labels.id,
       this.trelloAction.data
@@ -225,19 +215,18 @@ export class Worker {
       this.trelloAction.data
     );
     if (sameLabelId === undefined) {
-      await ApiExecutor.createLabel(
+      return ApiExecutor.createLabel(
         client,
         this.apps.labels.id,
         this.trelloAction.data
       );
-    } else {
-      await ApiExecutor.updateLabel(
-        client,
-        this.apps.labels.id,
-        this.trelloAction.data,
-        sameLabelId
-      );
     }
+    return ApiExecutor.updateLabel(
+      client,
+      this.apps.labels.id,
+      this.trelloAction.data,
+      sameLabelId
+    );
   }
 
   async addLabelToCard() {
@@ -259,13 +248,13 @@ export class Worker {
       this.trelloAction.data
     );
     if (labelRecordId === undefined) {
-      await ApiExecutor.createLabel(
+      return ApiExecutor.createLabel(
         client,
         this.apps.labels.id,
         this.trelloAction.data
       );
     }
-    await ApiExecutor.addLabelToCard(
+    return ApiExecutor.addLabelToCard(
       client,
       this.apps.cards.id,
       this.trelloAction.data,
@@ -288,14 +277,13 @@ export class Worker {
       this.apps.cards.id,
       this.trelloAction.data
     );
-    if (kintoneUserCodesOfSetted)
-      await ApiExecutor.addMemberToCard(
-        client,
-        this.apps.cards.id,
-        recordId as string,
-        kintoneUserCode,
-        kintoneUserCodesOfSetted
-      );
+    return ApiExecutor.addMemberToCard(
+      client,
+      this.apps.cards.id,
+      recordId as string,
+      kintoneUserCode,
+      kintoneUserCodesOfSetted
+    );
   }
 
   async removeMemberFromCard() {
@@ -312,7 +300,7 @@ export class Worker {
       this.apps.cards.id,
       this.trelloAction.data
     );
-    await ApiExecutor.removeMemberFromCard(
+    return ApiExecutor.removeMemberFromCard(
       client,
       this.apps.cards.id,
       recordId as string,

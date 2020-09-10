@@ -1,0 +1,542 @@
+/* eslint-disable no-loop-func */
+
+import { KintoneRestAPIClient } from "@kintone/rest-api-client";
+import { Action } from "../Trello";
+import { Trekin } from "../Trekin";
+import * as fs from "fs";
+import { CardApp, LabelApp, ListApp, MemberApp } from "../Kintone";
+
+jest.mock("@kintone/rest-api-client");
+const KintoneMock = (KintoneRestAPIClient as unknown) as jest.Mock;
+
+const runOperationKintone = async (
+  inputFilePath: string,
+  mockOverrides: any = undefined
+): Promise<any> => {
+  KintoneMock.mockImplementationOnce(() => {
+    return {
+      record: {
+        addRecord: () => {
+          return Promise.resolve({});
+        },
+        getRecords: () => {
+          return Promise.resolve({
+            records: [{ $id: { value: "aaa" } }, { $id: { value: "bbb" } }],
+          });
+        },
+        updateRecord: () => {
+          return Promise.resolve({});
+        },
+        ...mockOverrides,
+      },
+    };
+  });
+  const t = new Trekin({
+    baseUrl: "",
+    cards: { id: "", token: "" },
+    defaultKintoneUserCode: "",
+    labels: { id: "", token: "" },
+    lists: { id: "", token: "" },
+    members: { id: "", token: "" },
+  });
+
+  const action: Action = JSON.parse(
+    await fs.readFileSync(inputFilePath, "utf8")
+  ).body.action;
+  return t.operationKintone(action);
+};
+
+describe("createCardのテスト", () => {
+  const testcases = [
+    {
+      name: "カードを追加できる",
+      input: "./src/__tests__/trello_events/createCard_1.json",
+      expected: {
+        app: "",
+        record: {
+          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
+          [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
+          [CardApp.idList]: { value: "5f1e8b1ed6438e403c6f18fe" },
+        },
+      },
+    },
+    {
+      name: "listがjsonにない場合でも追加できる",
+      input: "./src/__tests__/trello_events/createCard_2.json",
+      expected: {
+        app: "",
+        record: {
+          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
+          [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("updateCardのテスト", () => {
+  const testcases = [
+    {
+      name: "oldにキーがある場合recordにもキーが含まれる",
+      input: "./src/__tests__/trello_events/updateCard_idList_1.json",
+      expected: {
+        [CardApp.id]: { value: "newId" },
+        [CardApp.name]: { value: "newName" },
+        [CardApp.idList]: { value: "newIdList" },
+      },
+    },
+    {
+      name: "oldにキーがない場合recordにキーは含まれない",
+      input: "./src/__tests__/trello_events/updateCard_idList_2.json",
+      expected: {
+        [CardApp.name]: { value: "newName" },
+        [CardApp.idList]: { value: "newIdList" },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("createListのテスト", () => {
+  const testcases = [
+    {
+      name: "リストを追加できる",
+      input: "./src/__tests__/trello_events/createList_1.json",
+      expected: {
+        app: "",
+        record: {
+          [ListApp.name]: { value: "新しいリスト" },
+          [ListApp.id]: { value: "5f1e40c92cfacb6dc5d4bbe5" },
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("updateListのテスト", () => {
+  const testcases = [
+    {
+      name: "リストを更新できる",
+      input: "./src/__tests__/trello_events/updateList_1.json",
+      expected: {
+        [ListApp.name]: { value: "テスト2" },
+      },
+    },
+    {
+      name: "リストをアーカイブできる",
+      input: "./src/__tests__/trello_events/updateList_closed_1.json",
+      expected: {
+        [ListApp.closed]: { value: true },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("createLabelのテスト", () => {
+  const testcases = [
+    {
+      name: "ラベルを追加できる",
+      input: "./src/__tests__/trello_events/createLabel_1.json",
+      expected: {
+        app: "",
+        record: {
+          [LabelApp.name]: { value: "黒いラベルだよ！" },
+          [LabelApp.id]: { value: "5f1e6180d9aed686cc5a1ca5" },
+          [LabelApp.color]: { value: "black" },
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("updateLabelのテスト", () => {
+  const testcases = [
+    {
+      name: "ラベルを更新できる",
+      input: "./src/__tests__/trello_events/updateLabel_1.json",
+      expected: {
+        app: "",
+        id: "5f02821bf1bb5752f63a5ae5",
+        record: {
+          [LabelApp.name]: { value: "新しいラベルだ！" },
+          [LabelApp.color]: { value: "yellow" },
+        },
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [{ $id: { value: "5f02821bf1bb5752f63a5ae5" } }],
+          });
+        },
+      },
+    },
+    {
+      name: "ラベルがアプリ上に存在しない場合、作成できる",
+      input: "./src/__tests__/trello_events/updateLabel_1.json",
+      expected: {
+        app: "",
+        record: {
+          [LabelApp.name]: { value: "新しいラベルだ！" },
+          [LabelApp.id]: { value: "5f02821bf1bb5752f63a5ae5" },
+          [LabelApp.color]: { value: "yellow" },
+        },
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [],
+          });
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected, mock } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input, mock);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("addLabelToCardのテスト", () => {
+  const testcases = [
+    {
+      name: "ラベルをカードに登録できる",
+      input: "./src/__tests__/trello_events/addLabelToCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.labelTable]: {
+            value: [{ value: { LABEL_ID: "5f1e6180d9aed686cc5a1ca5" } }],
+          },
+        },
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.labelTable]: {
+                  value: [],
+                },
+              },
+            ],
+          });
+        },
+      },
+    },
+    {
+      name: "すでにラベルがあってもラベルをカードに登録できる",
+      input: "./src/__tests__/trello_events/addLabelToCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.labelTable]: {
+            value: [
+              { id: "other label1" },
+              { id: "other label2" },
+              { value: { LABEL_ID: "5f1e6180d9aed686cc5a1ca5" } },
+            ],
+          },
+        },
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.labelTable]: {
+                  value: [{ id: "other label1" }, { id: "other label2" }],
+                },
+              },
+            ],
+          });
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected, mock } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input, mock);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("addMemberToCardのテスト", () => {
+  const testcases = [
+    {
+      name: "メンバーをカードに登録できる",
+      input: "./src/__tests__/trello_events/addMemberToCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.member]: { value: [{ code: "aaa" }] },
+        },
+      },
+      mock: {
+        getRecords: (params: any) => {
+          let returnValue: any;
+          if (params.fields.includes(CardApp.member)) {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [CardApp.member]: { value: [] },
+                },
+              ],
+            };
+          } else {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [MemberApp.kintoneUser]: {
+                    value: [{ code: "aaa", name: "aaaa" }],
+                  },
+                },
+              ],
+            };
+          }
+          return Promise.resolve(returnValue);
+        },
+      },
+    },
+    {
+      name:
+        "すでに他のメンバが登録されている状態でメンバを増やしてもすでにいるメンバは消えない",
+      input: "./src/__tests__/trello_events/addMemberToCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.member]: {
+            value: [
+              { code: "other user1" },
+              { code: "other user2" },
+              { code: "user" },
+            ],
+          },
+        },
+      },
+      mock: {
+        getRecords: (params: any) => {
+          let returnValue: any;
+          if (params.fields.includes(CardApp.member)) {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [CardApp.member]: {
+                    value: [
+                      { code: "other user1", name: "aaaa" },
+                      { code: "other user2", name: "aaaa" },
+                    ],
+                  },
+                },
+              ],
+            };
+          } else {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [MemberApp.kintoneUser]: {
+                    value: [{ code: "user", name: "aaaa" }],
+                  },
+                },
+              ],
+            };
+          }
+          return Promise.resolve(returnValue);
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected, mock } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input, mock);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("removeMemberFromCardのテスト", () => {
+  const testcases = [
+    {
+      name: "メンバーをカードから削除できる",
+      input: "./src/__tests__/trello_events/removeMemberFromCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.member]: { value: [] },
+        },
+      },
+      mock: {
+        getRecords: (params: any) => {
+          let returnValue: any;
+          if (params.fields.includes(CardApp.member)) {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [CardApp.member]: {
+                    value: [{ code: "aaa", name: "aaaa" }],
+                  },
+                },
+              ],
+            };
+          } else {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [MemberApp.kintoneUser]: {
+                    value: [{ code: "aaa", name: "aaaa" }],
+                  },
+                },
+              ],
+            };
+          }
+          return Promise.resolve(returnValue);
+        },
+      },
+    },
+    {
+      name:
+        "すでに他のメンバが登録されている状態でメンバを消してもすでにいるメンバは消えない",
+      input: "./src/__tests__/trello_events/removeMemberFromCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.member]: {
+            value: [{ code: "other user1" }, { code: "other user2" }],
+          },
+        },
+      },
+      mock: {
+        getRecords: (params: any) => {
+          let returnValue: any;
+          if (params.fields.includes(CardApp.member)) {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [CardApp.member]: {
+                    value: [
+                      { code: "other user1", name: "aaaa" },
+                      { code: "other user2", name: "aaaa" },
+                      { code: "user", name: "aaaa" },
+                    ],
+                  },
+                },
+              ],
+            };
+          } else {
+            returnValue = {
+              records: [
+                {
+                  $id: { value: "5f1590bb8a1a602edd449930" },
+                  [MemberApp.kintoneUser]: {
+                    value: [{ code: "user", name: "aaaa" }],
+                  },
+                },
+              ],
+            };
+          }
+          return Promise.resolve(returnValue);
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected, mock } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input, mock);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("copyCardのテスト", () => {
+  const testcases = [
+    {
+      name: "カードを追加できる",
+      input: "./src/__tests__/trello_events/copyCard_1.json",
+      expected: {
+        app: "",
+        record: {
+          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
+          [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
+          [CardApp.idList]: { value: "5f1e8b1ed6438e403c6f18fe" },
+        },
+      },
+    },
+    {
+      name: "listがjsonにない場合でも追加できる",
+      input: "./src/__tests__/trello_events/copyCard_2.json",
+      expected: {
+        app: "",
+        record: {
+          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
+          [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});

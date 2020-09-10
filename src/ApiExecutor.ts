@@ -231,11 +231,14 @@ const createCard = async (
   appId: string,
   data: Data
 ) => {
-  const addRecordParam = {
+  const addRecordParam: {
+    app: string;
+    record: { [key: string]: { value: any } };
+  } = {
     app: appId,
     record: {
       [CardApp.name]: {
-        value: data.card.text,
+        value: data.card.name,
       },
       [CardApp.id]: {
         value: data.card.id,
@@ -245,6 +248,10 @@ const createCard = async (
       },
     },
   };
+  for (const [key] of Object.entries(data.card)) {
+    if (CardApp[key] === undefined) continue;
+    addRecordParam.record[CardApp[key]] = { value: data.card[key] };
+  }
   if (Object.prototype.hasOwnProperty.call(data, "list")) {
     addRecordParam.record[CardApp.idList] = {
       value: (data.list as ListShort).id,

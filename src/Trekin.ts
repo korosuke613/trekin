@@ -12,6 +12,6 @@ export class Trekin {
   }
 
   public async operationKintone(trelloAction: Action) {
-    await this.worker.action(trelloAction);
+    return this.worker.action(trelloAction);
   }
 }

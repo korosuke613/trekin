@@ -1,0 +1,70 @@
+{
+  "body": {
+    "action": {
+      "id": "5f2cb8a4c27ff819e10e03fd",
+      "idMemberCreator": "5ecb263b62993c0d35798ec6",
+      "data": {
+        "idMember": "5ecb263b62993c0d35798ec6",
+        "card": {
+          "id": "5f1e865323566c0f75e0c961",
+          "name": "テストテスト",
+          "idShort": 24,
+          "shortLink": "azcKqDTo"
+        },
+        "board": {
+          "id": "5f02821bf3e65f322beb3ea4",
+          "name": "trello APIテスト",
+          "shortLink": "Sqsia9EM"
+        },
+        "member": {
+          "id": "5ecb263b62993c0d35798ec6",
+          "name": "Futa Hirakoba"
+        }
+      },
+      "type": "addMemberToCard",
+      "date": "2020-08-07T02:12:52.353Z",
+      "limits": {},
+      "display": {
+        "translationKey": "action_member_joined_card",
+        "entities": {
+          "card": {
+            "type": "card",
+            "id": "5f1e865323566c0f75e0c961",
+            "shortLink": "azcKqDTo",
+            "text": "テストテスト"
+          },
+          "memberCreator": {
+            "type": "member",
+            "id": "5ecb263b62993c0d35798ec6",
+            "username": "korosuke613",
+            "text": "Futa Hirakoba (平木場 風太)"
+          }
+        }
+      },
+      "member": {
+        "id": "5ecb263b62993c0d35798ec6",
+        "username": "korosuke613",
+        "activityBlocked": false,
+        "avatarHash": "afe1dce94ee1d794699a96d03c560dee",
+        "avatarUrl": "https://trello-members.s3.amazonaws.com/5ecb263b62993c0d35798ec6/afe1dce94ee1d794699a96d03c560dee",
+        "fullName": "Futa Hirakoba",
+        "idMemberReferrer": "5e82ef3619774982716eb912",
+        "initials": "FH",
+        "nonPublic": {},
+        "nonPublicAvailable": true
+      },
+      "memberCreator": {
+        "id": "5ecb263b62993c0d35798ec6",
+        "username": "korosuke613",
+        "activityBlocked": false,
+        "avatarHash": "afe1dce94ee1d794699a96d03c560dee",
+        "avatarUrl": "https://trello-members.s3.amazonaws.com/5ecb263b62993c0d35798ec6/afe1dce94ee1d794699a96d03c560dee",
+        "fullName": "Futa Hirakoba",
+        "idMemberReferrer": "5e82ef3619774982716eb912",
+        "initials": "FH",
+        "nonPublic": {},
+        "nonPublicAvailable": true
+      }
+    }
+  }
+}
