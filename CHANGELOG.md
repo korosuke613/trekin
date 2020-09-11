@@ -1,3 +1,18 @@
+# [0.2.0](https://github.com/korosuke613/trekin/compare/v0.1.1...v0.2.0) (2020-09-11)
+
+
+### Bug Fixes
+
+* bug fix getKintoneUserCodeIfNotExistsAddMember ([ced7f89](https://github.com/korosuke613/trekin/commit/ced7f89af219d83c2290a983fa535807bfa135ef))
+
+
+### Features
+
+* log to make it easier to understand ([473303a](https://github.com/korosuke613/trekin/commit/473303a10b890c2398b8c4db4d5ca7263327b9e6))
+* support remove label from card ([0139c0d](https://github.com/korosuke613/trekin/commit/0139c0d85dffd581964550968806d3666229cb03))
+
+
+
 ## [0.1.1](https://github.com/korosuke613/trekin/compare/v0.1.0...v0.1.1) (2020-09-11)
 
 
