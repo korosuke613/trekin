@@ -309,14 +309,20 @@ describe("getRecordIdAndLabelIdsFromCardのテスト", () => {
               value: "aaa",
             },
             [CardApp.labelTable]: {
-              value: [{ id: "label_1" }, { id: "label_2" }],
+              value: [
+                { id: "1", value: { LABEL_ID: "aaa", LABEL_NAME: "label_1" } },
+                { id: "2", value: { LABEL_ID: "bbb", LABEL_NAME: "label_2" } },
+              ],
             },
           },
         ],
       },
       expected: {
         recordId: "aaa",
-        tableIds: ["label_1", "label_2"],
+        tableIds: [
+          { id: "1", value: { LABEL_ID: "aaa", LABEL_NAME: "label_1" } },
+          { id: "2", value: { LABEL_ID: "bbb", LABEL_NAME: "label_2" } },
+        ],
       },
     },
     {
@@ -679,7 +685,16 @@ describe("addLabelToCardのテスト", () => {
         label: { id: "id", name: "name", color: "color" },
       },
       input2: "recordId",
-      input3: ["alreadyLabelId1", "alreadyLabelId2"],
+      input3: [
+        {
+          id: "alreadyLabelId1",
+          value: { LABEL_ID: "alreadyLabelId1", LABEL_NAME: "red" },
+        },
+        {
+          id: "alreadyLabelId2",
+          value: { LABEL_ID: "alreadyLabelId2", LABEL_NAME: "blue" },
+        },
+      ],
       expected: {
         app: "appId",
         id: "recordId",

@@ -1,0 +1,114 @@
+{
+  "body": {
+    "model": {
+      "id": "5f02821bf3e65f322beb3ea4",
+      "name": "trello APIテスト",
+      "desc": "",
+      "descData": null,
+      "closed": false,
+      "idOrganization": null,
+      "idEnterprise": null,
+      "pinned": false,
+      "url": "https://trello.com/b/Sqsia9EM/trello-api%E3%83%86%E3%82%B9%E3%83%88",
+      "shortUrl": "https://trello.com/b/Sqsia9EM",
+      "prefs": {
+        "permissionLevel": "private",
+        "hideVotes": false,
+        "voting": "disabled",
+        "comments": "members",
+        "invitations": "members",
+        "selfJoin": false,
+        "cardCovers": true,
+        "isTemplate": false,
+        "cardAging": "regular",
+        "calendarFeedEnabled": false,
+        "background": "blue",
+        "backgroundImage": null,
+        "backgroundImageScaled": null,
+        "backgroundTile": false,
+        "backgroundBrightness": "dark",
+        "backgroundColor": "#0079BF",
+        "backgroundBottomColor": "#0079BF",
+        "backgroundTopColor": "#0079BF",
+        "canBePublic": true,
+        "canBeEnterprise": true,
+        "canBeOrg": true,
+        "canBePrivate": true,
+        "canInvite": true
+      },
+      "labelNames": {
+        "green": "みどりだよん",
+        "yellow": "黄色だよんn",
+        "orange": "オレンジだよん",
+        "red": "あかだよん",
+        "purple": "これはパープルdesu",
+        "blue": "半分あおい",
+        "sky": "",
+        "lime": "",
+        "pink": "",
+        "black": "黒い"
+      }
+    },
+    "action": {
+      "id": "5f5b92f0257f150d5109a96f",
+      "idMemberCreator": "5ecb263b62993c0d35798ec6",
+      "data": {
+        "value": "green",
+        "text": "みどりだよん",
+        "card": {
+          "id": "5f5b13bc642ebd1e2d4b2b3e",
+          "name": "9月11日(金)",
+          "idShort": 31,
+          "shortLink": "WQZHVtGI"
+        },
+        "board": {
+          "id": "5f02821bf3e65f322beb3ea4",
+          "name": "trello APIテスト",
+          "shortLink": "Sqsia9EM"
+        },
+        "label": {
+          "id": "5f02821bf1bb5752f63a5ae1",
+          "name": "みどりだよん",
+          "color": "green"
+        }
+      },
+      "type": "removeLabelFromCard",
+      "date": "2020-09-11T15:08:32.438Z",
+      "limits": {},
+      "display": {
+        "translationKey": "action_remove_label_from_card",
+        "entities": {
+          "label": {
+            "type": "label",
+            "color": "green",
+            "text": "みどりだよん"
+          },
+          "card": {
+            "type": "card",
+            "id": "5f5b13bc642ebd1e2d4b2b3e",
+            "shortLink": "WQZHVtGI",
+            "text": "9月11日(金)"
+          },
+          "memberCreator": {
+            "type": "member",
+            "id": "5ecb263b62993c0d35798ec6",
+            "username": "korosuke613",
+            "text": "Futa Hirakoba (平木場 風太)"
+          }
+        }
+      },
+      "memberCreator": {
+        "id": "5ecb263b62993c0d35798ec6",
+        "username": "korosuke613",
+        "activityBlocked": false,
+        "avatarHash": "afe1dce94ee1d794699a96d03c560dee",
+        "avatarUrl": "https://trello-members.s3.amazonaws.com/5ecb263b62993c0d35798ec6/afe1dce94ee1d794699a96d03c560dee",
+        "fullName": "Futa Hirakoba",
+        "idMemberReferrer": "5e82ef3619774982716eb912",
+        "initials": "FH",
+        "nonPublic": {},
+        "nonPublicAvailable": true
+      }
+    }
+  }
+}
