@@ -13,7 +13,7 @@ const runOperationKintone = async (
   inputFilePath: string,
   mockOverrides: any = undefined
 ): Promise<any> => {
-  KintoneMock.mockImplementationOnce(() => {
+  KintoneMock.mockImplementation(() => {
     return {
       record: {
         addRecord: () => {
@@ -239,6 +239,7 @@ describe("addLabelToCardのテスト", () => {
   const testcases = [
     {
       name: "ラベルをカードに登録できる",
+      isError: false,
       input: "./src/__tests__/trello_events/addLabelToCard_1.json",
       expected: {
         app: "",
@@ -266,6 +267,7 @@ describe("addLabelToCardのテスト", () => {
     },
     {
       name: "すでにラベルがあってもラベルをカードに登録できる",
+      isError: false,
       input: "./src/__tests__/trello_events/addLabelToCard_1.json",
       expected: {
         app: "",
@@ -273,8 +275,8 @@ describe("addLabelToCardのテスト", () => {
         record: {
           [CardApp.labelTable]: {
             value: [
-              { id: "other label1" },
-              { id: "other label2" },
+              { id: "2" },
+              { id: "3" },
               { value: { LABEL_ID: "5f1e6180d9aed686cc5a1ca5" } },
             ],
           },
@@ -287,7 +289,170 @@ describe("addLabelToCardのテスト", () => {
               {
                 $id: { value: "5f1590bb8a1a602edd449930" },
                 [CardApp.labelTable]: {
-                  value: [{ id: "other label1" }, { id: "other label2" }],
+                  value: [
+                    {
+                      id: 2,
+                      value: { LABEL_ID: "alreadyLabelId1", LABEL_NAME: "red" },
+                    },
+                    {
+                      id: 3,
+                      value: {
+                        LABEL_ID: "alreadyLabelId2",
+                        LABEL_NAME: "blue",
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          });
+        },
+      },
+    },
+    {
+      name: "すでに同じラベルがあった場合ラベルをカードに追加しない",
+      isError: true,
+      input: "./src/__tests__/trello_events/addLabelToCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {},
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.labelTable]: {
+                  value: [
+                    {
+                      id: "1",
+                      value: {
+                        LABEL_ID: { value: "5f1e6180d9aed686cc5a1ca5" },
+                        LABEL_NAME: { value: "yellow" },
+                      },
+                    },
+                    {
+                      id: 2,
+                      value: {
+                        LABEL_ID: { value: "alreadyLabelId1" },
+                        LABEL_NAME: { value: "red" },
+                      },
+                    },
+                    {
+                      id: 3,
+                      value: {
+                        LABEL_ID: { value: "alreadyLabelId2" },
+                        LABEL_NAME: { value: "blue" },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          });
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected, mock, isError } of testcases) {
+    test(name, async () => {
+      if (isError) {
+        const throwFunction = async () => {
+          await runOperationKintone(input, mock);
+        };
+        await expect(throwFunction).rejects.toThrowError(
+          new Error("Label gsgaga(5f1e6180d9aed686cc5a1ca5) is already exists")
+        );
+        return;
+      }
+      const actual = await runOperationKintone(input, mock);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("removeLabelFromCardのテスト", () => {
+  const testcases = [
+    {
+      name: "ラベルからカードを削除できる",
+      input: "./src/__tests__/trello_events/removeLabelFromCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.labelTable]: {
+            value: [],
+          },
+        },
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.labelTable]: {
+                  value: [
+                    {
+                      id: "1",
+                      value: {
+                        LABEL_ID: { value: "5f02821bf1bb5752f63a5ae1" },
+                        LABEL_NAME: { value: "yellow" },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          });
+        },
+      },
+    },
+    {
+      name: "指定したカードのみ削除できる",
+      input: "./src/__tests__/trello_events/removeLabelFromCard_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          [CardApp.labelTable]: {
+            value: [{ id: "2" }, { id: "3" }],
+          },
+        },
+      },
+      mock: {
+        getRecords: () => {
+          return Promise.resolve({
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.labelTable]: {
+                  value: [
+                    {
+                      id: "1",
+                      value: {
+                        LABEL_ID: { value: "5f02821bf1bb5752f63a5ae1" },
+                        LABEL_NAME: { value: "yellow" },
+                      },
+                    },
+                    {
+                      id: 2,
+                      value: {
+                        LABEL_ID: { value: "alreadyLabelId1" },
+                        LABEL_NAME: { value: "red" },
+                      },
+                    },
+                    {
+                      id: 3,
+                      value: {
+                        LABEL_ID: { value: "alreadyLabelId2" },
+                        LABEL_NAME: { value: "blue" },
+                      },
+                    },
+                  ],
                 },
               },
             ],

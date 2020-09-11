@@ -21,7 +21,11 @@ export class Worker {
     | {
         app: string;
         id?: string;
-        record: { [key: string]: { value: string | string[] | undefined } };
+        record: {
+          [key: string]: {
+            value: string | string[] | Array<{ id: string }> | undefined;
+          };
+        };
       }
     | { [key: string]: { value: string } }
   > {
@@ -51,6 +55,9 @@ export class Worker {
       }
       case ActionType.ADD_LABEL_TO_CARD: {
         return this.addLabelToCard();
+      }
+      case ActionType.REMOVE_LABEL_FROM_CARD: {
+        return this.removeLabelFromCard();
       }
       case ActionType.ADD_MEMBER_TO_CARD: {
         return this.addMemberToCard();
@@ -229,7 +236,7 @@ export class Worker {
     );
   }
 
-  async addLabelToCard() {
+  async getRecordIdAndLabelIdsFromCard() {
     const client = await this.kintoneClientCreator.createKintoneClient([
       this.apps.cards.token,
       this.apps.labels.token,
@@ -248,13 +255,46 @@ export class Worker {
       this.trelloAction.data
     );
     if (labelRecordId === undefined) {
-      return ApiExecutor.createLabel(
+      await ApiExecutor.createLabel(
         client,
         this.apps.labels.id,
         this.trelloAction.data
       );
     }
+
+    return cardInfo;
+  }
+
+  async addLabelToCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+      this.apps.labels.token,
+    ]);
+    const cardInfo = await this.getRecordIdAndLabelIdsFromCard();
+    cardInfo.tableIds.forEach((record) => {
+      if (record.value.LABEL_ID.value === this.trelloAction.data.label.id) {
+        throw new Error(
+          `Label ${this.trelloAction.data.label.name}(${this.trelloAction.data.label.id}) is already exists`
+        );
+      }
+    });
+
     return ApiExecutor.addLabelToCard(
+      client,
+      this.apps.cards.id,
+      this.trelloAction.data,
+      cardInfo.recordId,
+      cardInfo.tableIds
+    );
+  }
+
+  async removeLabelFromCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+      this.apps.labels.token,
+    ]);
+    const cardInfo = await this.getRecordIdAndLabelIdsFromCard();
+    return ApiExecutor.removeLabelFromCard(
       client,
       this.apps.cards.id,
       this.trelloAction.data,

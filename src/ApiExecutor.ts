@@ -170,7 +170,18 @@ const getRecordIdAndLabelIdsFromCard = async (
   client: KintoneRestAPIClient,
   appId: string,
   data: Data
-): Promise<{ recordId: string; tableIds: string[] } | undefined> => {
+): Promise<
+  | {
+      recordId: string;
+      tableIds: Array<{
+        id: string;
+        value: {
+          [key: string]: any;
+        };
+      }>;
+    }
+  | undefined
+> => {
   const cardId = data.card.id;
   const res = await client.record.getRecords({
     app: appId,
@@ -186,10 +197,23 @@ const getRecordIdAndLabelIdsFromCard = async (
       : "";
   const labels = res.records[0][CardApp.labelTable].value as Array<{
     id: string;
+    value: {
+      [key: string]: any;
+    };
   }>;
-  const tableIds = labels.map((x) => x.id);
+  const tableIds = labels.map((x) => {
+    return {
+      id: x.id,
+      value: {
+        LABEL_ID: x.value?.LABEL_ID,
+        LABEL_NAME: x.value?.LABEL_NAME,
+      },
+    };
+  });
   console.info(
-    `getRecordIdAndLabelIdsFromCard\nCard record ID: ${recordId}\nCard with label table IDs: ${tableIds.toString()}`
+    `getRecordIdAndLabelIdsFromCard\nCard record ID: ${recordId}\nCard with label table IDs: ${JSON.stringify(
+      tableIds
+    )}`
   );
 
   return { recordId, tableIds };
@@ -396,11 +420,16 @@ const addLabelToCard = async (
   appId: string,
   data: Data,
   recordId: string,
-  tableIds: string[]
+  tableIds: Array<{
+    id: string;
+    value: {
+      [key: string]: any;
+    };
+  }>
 ) => {
-  const tableRecords: any[] = tableIds.map((id) => {
+  const tableRecords: any[] = tableIds.map((records) => {
     return {
-      id: id.toString(),
+      id: records.id.toString(),
     };
   });
   tableRecords.push({
@@ -408,6 +437,40 @@ const addLabelToCard = async (
       [CardApp.labelId]: data.label.id,
     },
   });
+  const params = {
+    app: appId,
+    id: recordId,
+    record: {
+      [CardApp.labelTable]: {
+        value: tableRecords,
+      },
+    },
+  };
+  await client.record.updateRecord(params);
+
+  return params;
+};
+
+const removeLabelFromCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  recordId: string,
+  tableIds: Array<{
+    id: string;
+    value: {
+      [key: string]: any;
+    };
+  }>
+) => {
+  const tableRecords: Array<{ id: string }> = tableIds
+    .filter((record) => record.value.LABEL_ID.value !== data.label.id)
+    .map((label) => {
+      return {
+        id: label.id.toString(),
+      };
+    });
+
   const params = {
     app: appId,
     id: recordId,
@@ -486,6 +549,7 @@ export const ApiExecutor = {
   updateList,
   addMember,
   addLabelToCard,
+  removeLabelFromCard,
   addMemberToCard,
   getRecordIdFromCard,
   getKintoneUserCode,

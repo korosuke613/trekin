@@ -7,6 +7,7 @@ export class ActionType {
   static readonly CREATE_LABEL = "createLabel";
   static readonly UPDATE_LABEL = "updateLabel";
   static readonly ADD_LABEL_TO_CARD = "addLabelToCard";
+  static readonly REMOVE_LABEL_FROM_CARD = "removeLabelFromCard";
   static readonly ADD_MEMBER_TO_CARD = "addMemberToCard";
   static readonly REMOVE_MEMBER_FROM_CARD = "removeMemberFromCard";
 }
