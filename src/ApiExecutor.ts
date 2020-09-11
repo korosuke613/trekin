@@ -26,7 +26,7 @@ const getRecordIdFromCard = async (
     res.records[0].$id.value !== null
       ? res.records[0].$id.value.toString()
       : "";
-  console.info(`EVENT\nRecord ID: ${recordId}`);
+  console.info(`getRecordIdFromCard\nCard record ID: ${recordId}`);
 
   return recordId;
 };
@@ -60,7 +60,7 @@ const getRecordIdFromList = async (
     res.records[0].$id.value !== null
       ? res.records[0].$id.value.toString()
       : "";
-  console.info(`EVENT\nRecord ID: ${recordId}`);
+  console.info(`getRecordIdFromList\nList record ID: ${recordId}`);
 
   return recordId;
 };
@@ -89,7 +89,7 @@ const getRecordIdFromLabelOfSame = async (
     res.records[0].$id.value !== null
       ? res.records[0].$id.value.toString()
       : "";
-  console.info(`EVENT\nRecord ID: ${recordId}`);
+  console.info(`getRecordIdFromLabelOfSame\nLabel record ID: ${recordId}`);
 
   return recordId;
 };
@@ -123,7 +123,7 @@ const getKintoneUserCode = async (
       ? (kintoneUsers[0] as { code: string; name: string })
       : { code: "", name: "" };
   const kintoneUserCode = kintoneUser.code;
-  console.info(`EVENT\nKINTONE_USER: ${kintoneUserCode}`);
+  console.info(`getKintoneUserCode\nkintone user code: ${kintoneUserCode}`);
 
   return kintoneUserCode;
 };
@@ -153,7 +153,9 @@ const getKintoneUserCodesOfSetted = async (
     name: string;
   }>;
   const memberCodes = members.map((x) => x.code);
-  console.info(`EVENT\nMember Codes: ${memberCodes.toString()}`);
+  console.info(
+    `getKintoneUserCodesOfSetted\nkintone user codes: ${memberCodes.toString()}`
+  );
 
   return memberCodes;
 };
@@ -187,7 +189,7 @@ const getRecordIdAndLabelIdsFromCard = async (
   }>;
   const tableIds = labels.map((x) => x.id);
   console.info(
-    `EVENT\nRecord ID: ${recordId}\nTable IDs: ${tableIds.toString()}`
+    `getRecordIdAndLabelIdsFromCard\nCard record ID: ${recordId}\nCard with label table IDs: ${tableIds.toString()}`
   );
 
   return { recordId, tableIds };
@@ -220,7 +222,7 @@ const addMember = async (
     },
   };
   await client.record.addRecord(addRecordParam).then((event) => {
-    console.info("EVENT\n" + event.id, event.revision);
+    console.info("addMember\n" + event.id, event.revision);
   });
 
   return addRecordParam;
@@ -259,7 +261,7 @@ const createCard = async (
   }
 
   await client.record.addRecord(addRecordParam).then((event) => {
-    console.info("EVENT\n" + event.id, event.revision);
+    console.info("createCard\n" + event.id, event.revision);
   });
 
   return addRecordParam;
@@ -285,7 +287,7 @@ const updateCard = async (
       record: record,
     })
     .then((event) => {
-      console.info(`EVENT\nRevision: ${event.revision}`);
+      console.info(`updateCard\nRevision: ${event.revision}`);
     });
 
   return record;
@@ -310,7 +312,7 @@ const updateList = async (
       record: record,
     })
     .then((event) => {
-      console.info(`EVENT\nRevision: ${event.revision}`);
+      console.info(`updateList\nRevision: ${event.revision}`);
     });
   return record;
 };
@@ -333,7 +335,7 @@ const createList = async (
     },
   };
   await client.record.addRecord(params).then((event) => {
-    console.info("EVENT\n" + event.id, event.revision);
+    console.info("createList\n" + event.id, event.revision);
   });
 
   return params;
@@ -359,7 +361,7 @@ const createLabel = async (
     },
   };
   await client.record.addRecord(params).then((event) => {
-    console.info("EVENT\n" + event.id, event.revision);
+    console.info("createLabel\n" + event.id, event.revision);
   });
   return params;
 };
@@ -383,7 +385,7 @@ const updateLabel = async (
     },
   };
   await client.record.updateRecord(params).then((event) => {
-    console.info(`EVENT\nRevision: ${event.revision}`);
+    console.info(`updateLabel\nRevision: ${event.revision}`);
   });
 
   return params;
