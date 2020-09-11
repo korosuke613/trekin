@@ -87,7 +87,7 @@ export class Worker {
   async getKintoneUserCodeIfNotExistsAddMember(client: KintoneRestAPIClient) {
     const kintoneUserCode = await ApiExecutor.getKintoneUserCode(
       client,
-      this.apps.cards.id,
+      this.apps.members.id,
       this.trelloAction.data
     );
     if (kintoneUserCode === undefined) {
