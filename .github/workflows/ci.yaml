@@ -1,18 +1,14 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - "*"
-    tags-ignore:
-      - 'v*'
+  push
 jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -39,7 +35,7 @@ jobs:
           reporter: github-pr-review
           eslint_flags: './**/*.{ts,js}'
       - name: Run eslint
-        run: npm run lint:eslint
+        run: npm run lint
 
   test:
     name: test

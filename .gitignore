@@ -149,6 +149,8 @@ build/Release
 node_modules/
 jspm_packages/
 lib/
+umd/
+esm/
 
 # TypeScript v1 declaration files
 typings/
