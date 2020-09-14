@@ -1,4 +1,4 @@
-import { Action, ActionType } from "./Trello";
+import { Action, ActionType, Certificate } from "./Trello";
 import { Apps } from "./Kintone";
 import { KintoneClientCreator } from "./KintoneClientCreator";
 import { ApiExecutor } from "./ApiExecutor";
@@ -8,16 +8,16 @@ export class Worker {
   public trelloAction: Action;
   private readonly kintoneClientCreator: KintoneClientCreator;
   private readonly apps: Apps;
+  private readonly trelloCert: Certificate;
 
-  constructor(apps: Apps) {
+  constructor(apps: Apps, trelloCert: Certificate) {
     this.kintoneClientCreator = new KintoneClientCreator(apps.baseUrl);
     this.apps = apps;
+    this.trelloCert = trelloCert;
     this.trelloAction = {} as Action;
   }
 
-  public async action(
-    trelloAction: Action
-  ): Promise<
+  public async action(): Promise<
     | {
         app: string;
         id?: string;
@@ -33,8 +33,6 @@ export class Worker {
       }
     | { [key: string]: { value: string } }
   > {
-    this.trelloAction = trelloAction;
-
     switch (this.trelloAction.type) {
       case ActionType.CREATE_CARD: {
         return this.createCard();
@@ -75,6 +73,37 @@ export class Worker {
     }
 
     return Promise.resolve({ app: "", record: {} });
+  }
+
+  public async postAction() {
+    switch (this.trelloAction.type) {
+      case ActionType.CREATE_CARD: {
+        return this.registerRecordIdToTrello();
+      }
+      case ActionType.COPY_CARD: {
+        return this.registerRecordIdToTrello();
+      }
+    }
+  }
+
+  async registerRecordIdToTrello() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const cardRecordId = await this.getCardRecordIdIfNotExistsCreateCard(
+      client
+    );
+    if (cardRecordId === undefined) {
+      throw new Error("Not exists Card");
+    }
+    return ApiExecutor.registerRecordIdToTrello(
+      this.trelloAction.data.card.id,
+      this.apps.baseUrl,
+      this.apps.cards.id,
+      this.trelloCert.apiKey,
+      this.trelloCert.apiToken,
+      cardRecordId
+    );
   }
 
   async getCardRecordIdIfNotExistsCreateCard(client: KintoneRestAPIClient) {

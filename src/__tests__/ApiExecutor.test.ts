@@ -4,8 +4,10 @@ import { ApiExecutor } from "../ApiExecutor";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 import { Data } from "../Trello";
 import { CardApp, LabelApp, ListApp, MemberApp } from "../Kintone";
+import retryTimes = jest.retryTimes;
 
 jest.mock("@kintone/rest-api-client");
+// jest.mock("node-fetch");
 
 const KintoneMock = (KintoneRestAPIClient as unknown) as jest.Mock;
 
@@ -833,6 +835,49 @@ describe("removeMemberFromCardのテスト", () => {
         input2,
         input3,
         input4
+      );
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("registerRecordIdToTrelloのテスト", () => {
+  const testcases = [
+    {
+      name: "RecordParamに入るべき値が正しい",
+      input: { card: { id: "id", name: "name", shortLink: "anyLink" } },
+      expected: {
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardID/attachments?key=trelloApiKey&token=trelloApiToken&name=EPTRE-13&url=https%3A%2F%2Fexample.com%2Fk%2F32%2Fshow%23record%3D13",
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      jest.mock("node-fetch", () => {
+        return (url: string) => {
+          return Promise.resolve({
+            status: 200,
+            statusText: "OK",
+            text: () => {
+              return "ok text";
+            },
+            url: url,
+          });
+        };
+      });
+
+      const actual = await ApiExecutor.registerRecordIdToTrello(
+        "cardID",
+        "https://example.com/",
+        "32",
+        "trelloApiKey",
+        "trelloApiToken",
+        "13"
       );
       expect(actual).toEqual(expected);
     });

@@ -1,17 +1,25 @@
-import { Action } from "./Trello";
+import { Action, Certificate } from "./Trello";
 import { Worker } from "./Worker";
 import { Apps } from "./Kintone";
 
 export class Trekin {
-  public kintoneApps: Apps;
+  private kintoneApps: Apps;
+  private trelloCert: Certificate;
   private worker: Worker;
 
-  constructor(kintoneApps: Apps) {
+  constructor(kintoneApps: Apps, trelloCert: Certificate) {
     this.kintoneApps = kintoneApps;
-    this.worker = new Worker(kintoneApps);
+    this.trelloCert = trelloCert;
+    this.worker = new Worker(kintoneApps, trelloCert);
   }
 
-  public async operationKintone(trelloAction: Action) {
-    return this.worker.action(trelloAction);
+  public async operation(trelloAction: Action) {
+    this.worker.trelloAction = trelloAction;
+    return this.worker.action();
+  }
+
+  public async postOperation(trelloAction: Action) {
+    this.worker.trelloAction = trelloAction;
+    return this.worker.postAction();
   }
 }
