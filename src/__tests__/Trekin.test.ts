@@ -27,6 +27,9 @@ const runOperationKintone = async (
         updateRecord: () => {
           return Promise.resolve({});
         },
+        addRecordComment: () => {
+          return Promise.resolve({});
+        },
         ...mockOverrides,
       },
     };
@@ -693,6 +696,29 @@ describe("copyCardのテスト", () => {
           [CardApp.name]: { value: "これは新しいカードです" },
           [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
           [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("commentCardのテスト", () => {
+  const testcases = [
+    {
+      name: "カードにコメントを登録できる",
+      input: "./src/__tests__/trello_events/commentCard_1.json",
+      expected: {
+        app: "",
+        record: "aaa",
+        comment: {
+          text: "korosuke613:Futa Hirakoba (平木場 風太)\n\nコメントだよ",
         },
       },
     },

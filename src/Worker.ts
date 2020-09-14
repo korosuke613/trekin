@@ -27,6 +27,10 @@ export class Worker {
           };
         };
       }
+    | {
+        app: string;
+        comment: { text: string };
+      }
     | { [key: string]: { value: string } }
   > {
     this.trelloAction = trelloAction;
@@ -64,6 +68,9 @@ export class Worker {
       }
       case ActionType.REMOVE_MEMBER_FROM_CARD: {
         return this.removeMemberFromCard();
+      }
+      case ActionType.COMMENT_CARD: {
+        return this.commentCard();
       }
     }
 
@@ -346,6 +353,19 @@ export class Worker {
       recordId as string,
       kintoneUserCode,
       kintoneUserCodesOfSetted
+    );
+  }
+
+  async commentCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const recordId = await this.getCardRecordIdIfNotExistsCreateCard(client);
+    return ApiExecutor.commentCard(
+      client,
+      this.apps.cards.id,
+      this.trelloAction.display.entities,
+      recordId as string
     );
   }
 }
