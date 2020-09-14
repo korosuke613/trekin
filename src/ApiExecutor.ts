@@ -1,5 +1,5 @@
 import { CardApp, LabelApp, ListApp, MemberApp } from "./Kintone";
-import { Data, ListShort } from "./Trello";
+import { Data, Entities, ListShort } from "./Trello";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 
 /**
@@ -540,6 +540,23 @@ const removeMemberFromCard = async (
   return params;
 };
 
+const commentCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  entities: Entities,
+  cardID: string
+) => {
+  const params = {
+    app: appId,
+    record: cardID,
+    comment: {
+      text: `${entities.memberCreator.username}:${entities.memberCreator.text}\n\n${entities.comment.text}`,
+    },
+  };
+  await client.record.addRecordComment(params);
+  return params;
+};
+
 export const ApiExecutor = {
   createCard,
   updateCard,
@@ -558,4 +575,5 @@ export const ApiExecutor = {
   getRecordIdFromLabelOfSame,
   removeMemberFromCard,
   getRecordIdFromList,
+  commentCard,
 };

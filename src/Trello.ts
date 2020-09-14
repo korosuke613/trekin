@@ -10,6 +10,7 @@ export class ActionType {
   static readonly REMOVE_LABEL_FROM_CARD = "removeLabelFromCard";
   static readonly ADD_MEMBER_TO_CARD = "addMemberToCard";
   static readonly REMOVE_MEMBER_FROM_CARD = "removeMemberFromCard";
+  static readonly COMMENT_CARD = "commentCard";
 }
 
 export interface CardShort {
@@ -64,6 +65,10 @@ export interface Label {
   color: string;
 }
 
+export interface Comment {
+  text: string;
+}
+
 export interface Member {
   id: string;
   name: string;
@@ -79,6 +84,7 @@ export interface MemberCreatorShort {
 export interface Entities {
   card: Card;
   list: List;
+  comment: Comment;
   memberCreator: MemberCreatorShort;
 }
 
