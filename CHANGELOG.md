@@ -1,3 +1,12 @@
+# [0.3.0](https://github.com/korosuke613/trekin/compare/v0.2.0...v0.3.0) (2020-09-14)
+
+
+### Features
+
+* support commentCard ([e664d3b](https://github.com/korosuke613/trekin/commit/e664d3be62b567a709fa83131ef43c36423b3bbe))
+
+
+
 # [0.2.0](https://github.com/korosuke613/trekin/compare/v0.1.1...v0.2.0) (2020-09-11)
 
 
