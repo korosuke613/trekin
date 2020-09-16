@@ -1,6 +1,7 @@
 import { CardApp, LabelApp, ListApp, MemberApp } from "./Kintone";
 import { Data, Entities, ListShort } from "./Trello";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
+const urlJoin = require("url-join");
 
 /**
  * Cardアプリからtrelloのカードに一致するレコードIDを取得する
@@ -557,6 +558,38 @@ const commentCard = async (
   return params;
 };
 
+export const registerRecordIdToTrello = async (
+  id: string,
+  baseUrl: string,
+  cardAppId: string,
+  trelloApiKey: string,
+  trelloApiToken: string,
+  eptreId: string
+) => {
+  const cardUrl = urlJoin(baseUrl, `/k/${cardAppId}/show#record=${eptreId}`);
+
+  // This code sample uses the 'node-fetch' library:
+  // https://www.npmjs.com/package/node-fetch
+  const fetch = require("node-fetch");
+  const fetchUrl = `https://api.trello.com/1/cards/${id}/attachments?key=${trelloApiKey}&token=${trelloApiToken}&name=EPTRE-${eptreId}&url=${encodeURIComponent(
+    cardUrl
+  )}`;
+  console.log(fetchUrl);
+  const fetchPromise = await fetch(fetchUrl, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  return {
+    url: fetchPromise.url,
+    status: fetchPromise.status,
+    statusText: fetchPromise.statusText,
+    text: await fetchPromise.text(),
+  };
+};
+
 export const ApiExecutor = {
   createCard,
   updateCard,
@@ -576,4 +609,5 @@ export const ApiExecutor = {
   removeMemberFromCard,
   getRecordIdFromList,
   commentCard,
+  registerRecordIdToTrello,
 };

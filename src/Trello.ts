@@ -13,6 +13,11 @@ export class ActionType {
   static readonly COMMENT_CARD = "commentCard";
 }
 
+export interface Certificate {
+  apiKey: string;
+  apiToken: string;
+}
+
 export interface CardShort {
   [key: string]: string | number | Date;
   id: string;

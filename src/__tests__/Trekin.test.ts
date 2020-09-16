@@ -34,19 +34,22 @@ const runOperationKintone = async (
       },
     };
   });
-  const t = new Trekin({
-    baseUrl: "",
-    cards: { id: "", token: "" },
-    defaultKintoneUserCode: "",
-    labels: { id: "", token: "" },
-    lists: { id: "", token: "" },
-    members: { id: "", token: "" },
-  });
+  const t = new Trekin(
+    {
+      baseUrl: "",
+      cards: { id: "", token: "" },
+      defaultKintoneUserCode: "",
+      labels: { id: "", token: "" },
+      lists: { id: "", token: "" },
+      members: { id: "", token: "" },
+    },
+    { apiKey: "", apiToken: "" }
+  );
 
   const action: Action = JSON.parse(
     await fs.readFileSync(inputFilePath, "utf8")
   ).body.action;
-  return t.operationKintone(action);
+  return t.operation(action);
 };
 
 describe("createCardのテスト", () => {
