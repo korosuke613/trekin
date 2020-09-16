@@ -1,3 +1,12 @@
+# [0.4.0](https://github.com/korosuke613/trekin/compare/v0.3.0...v0.4.0) (2020-09-16)
+
+
+### Features
+
+* Attach the URL of the kintone record when the new card is added. ([6add511](https://github.com/korosuke613/trekin/commit/6add511568c1e5e9a60fa99881a8d5448a87e8bb))
+
+
+
 # [0.3.0](https://github.com/korosuke613/trekin/compare/v0.2.0...v0.3.0) (2020-09-14)
 
 
