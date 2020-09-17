@@ -7,7 +7,7 @@
         "idMember": "5ecb263b62993c0d35798ec6",
         "card": {
           "id": "5f1e865323566c0f75e0c961",
-          "name": "テストテスト",
+          "name": "これは新しいカードです！！",
           "idShort": 24,
           "shortLink": "azcKqDTo"
         },
@@ -31,7 +31,7 @@
             "type": "card",
             "id": "5f1e865323566c0f75e0c961",
             "shortLink": "azcKqDTo",
-            "text": "テストテスト"
+            "text": "これは新しいカードです！！"
           },
           "memberCreator": {
             "type": "member",
