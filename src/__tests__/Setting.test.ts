@@ -1,8 +1,11 @@
 /* eslint-disable no-loop-func */
 import { Trekin } from "../Trekin";
-import path from "path";
 import { Action } from "../Trello";
 import fs from "fs";
+import { Worker } from "../Worker";
+
+jest.mock("../Worker");
+const WorkerMock = (Worker as unknown) as jest.Mock;
 
 const createTrekin = () => {
   const t = new Trekin(
@@ -16,6 +19,15 @@ const createTrekin = () => {
     },
     { apiKey: "", apiToken: "" }
   );
+  WorkerMock.mockImplementation(() => {
+    return {
+      trelloAction: undefined,
+      action: () => {
+        return Promise.resolve("Not skip this event");
+      },
+    };
+  });
+
   return t;
 };
 
@@ -48,10 +60,69 @@ describe("skipのテスト", () => {
     {
       name: "12文字以内はskipできる",
       input: [
-        "./src/__tests__/trekin_settings/.trekinrc.json5",
+        "./src/__tests__/trekin_settings/charactersOrLess_only.trekinrc.json5",
         "./src/__tests__/trello_events/skipCreateCard_1.json",
       ],
       expected: "Skip this event",
+    },
+    {
+      name: "「↑2020/08/20」はskipできる",
+      input: [
+        "./src/__tests__/trekin_settings/match_only_1.trekinrc.json5",
+        "./src/__tests__/trello_events/skipCreateCard_1.json",
+      ],
+      expected: "Skip this event",
+    },
+    {
+      name: "「\\d{4}\\/\\d{2}\\/\\d{2}」はskipできる",
+      input: [
+        "./src/__tests__/trekin_settings/match_only_2.trekinrc.json5",
+        "./src/__tests__/trello_events/skipCreateCard_1.json",
+      ],
+      expected: "Skip this event",
+    },
+    {
+      name: "「12文字以内」かつ「\\d{4}\\/\\d{2}\\/\\d{2}」はskipできる",
+      input: [
+        "./src/__tests__/trekin_settings/multiple_rule_1.trekinrc.json5",
+        "./src/__tests__/trello_events/skipCreateCard_1.json",
+      ],
+      expected: "Skip this event",
+    },
+    {
+      name:
+        "「\\d{4}\\/\\d{2}\\/\\d{2}」にはマッチするが「12文字以内」にマッチしないのでskipしない",
+      input: [
+        "./src/__tests__/trekin_settings/multiple_rule_1.trekinrc.json5",
+        "./src/__tests__/trello_events/skipCreateCard_2.json",
+      ],
+      expected: "Not skip this event",
+    },
+    {
+      name:
+        "「12文字以内」にはマッチするが「\\d{4}\\/\\d{2}\\/\\d{2}」にマッチしないのでskipしない",
+      input: [
+        "./src/__tests__/trekin_settings/multiple_rule_1.trekinrc.json5",
+        "./src/__tests__/trello_events/skipCreateCard_3.json",
+      ],
+      expected: "Not skip this event",
+    },
+    {
+      name:
+        "1つめのルールにはマッチしないが2つめのルールにマッチするのでskipする",
+      input: [
+        "./src/__tests__/trekin_settings/multiple_rule_2.trekinrc.json5",
+        "./src/__tests__/trello_events/skipCreateCard_1.json",
+      ],
+      expected: "Skip this event",
+    },
+    {
+      name: "どのルールにもにマッチしないのでskipする",
+      input: [
+        "./src/__tests__/trekin_settings/multiple_rule_2.trekinrc.json5",
+        "./src/__tests__/trello_events/createCard_1.json",
+      ],
+      expected: "Not skip this event",
     },
   ];
 

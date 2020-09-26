@@ -2,42 +2,9 @@ import { Action, Certificate } from "./Trello";
 import { Worker } from "./Worker";
 import { Apps } from "./Kintone";
 import path from "path";
+import { SettingGuardian } from "./Setting";
 const fs = require("fs");
 const JSON5 = require("json5");
-
-interface Setting {
-  exclude?: Array<{
-    charactersOrLess?: number;
-  }>;
-}
-
-class SettingGuardian {
-  public setting: Setting | undefined;
-
-  constructor(setting: Setting = {}) {
-    this.setting = setting;
-  }
-
-  public isSkipEvent(trelloAction: Action) {
-    let isSkip = false;
-    if (this.setting?.exclude === undefined) {
-      return false;
-    }
-    const excludes = this.setting?.exclude;
-
-    for (const excludeSetting of excludes) {
-      if (
-        excludeSetting.charactersOrLess &&
-        trelloAction.data.card &&
-        excludeSetting.charactersOrLess >= trelloAction.data.card.name.length
-      ) {
-        isSkip = true;
-        break;
-      }
-    }
-    return isSkip;
-  }
-}
 
 export class Trekin {
   private kintoneApps: Apps;
@@ -81,8 +48,9 @@ export class Trekin {
       }
     | { [key: string]: { value: string } }
   > {
-    if (this.guardian.isSkipEvent(trelloAction))
+    if (this.guardian.isSkipEvent(trelloAction)) {
       return Promise.resolve("Skip this event");
+    }
     this.worker.trelloAction = trelloAction;
     return this.worker.action();
   }
