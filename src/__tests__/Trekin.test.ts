@@ -49,6 +49,7 @@ const runOperationKintone = async (
   const action: Action = JSON.parse(
     await fs.readFileSync(inputFilePath, "utf8")
   ).body.action;
+  await t.readSetting("./src/__tests__/trekin_settings/.trekinrc.json5");
   return t.operation(action);
 };
 
@@ -60,7 +61,7 @@ describe("createCardのテスト", () => {
       expected: {
         app: "",
         record: {
-          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.name]: { value: "これは新しいカードです！！" },
           [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
           [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
           [CardApp.idList]: { value: "5f1e8b1ed6438e403c6f18fe" },
@@ -73,7 +74,7 @@ describe("createCardのテスト", () => {
       expected: {
         app: "",
         record: {
-          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.name]: { value: "これは新しいカードです！！" },
           [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
           [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
         },
@@ -96,7 +97,7 @@ describe("updateCardのテスト", () => {
       input: "./src/__tests__/trello_events/updateCard_idList_1.json",
       expected: {
         [CardApp.id]: { value: "newId" },
-        [CardApp.name]: { value: "newName" },
+        [CardApp.name]: { value: "これは新しいカードです！！" },
         [CardApp.idList]: { value: "newIdList" },
       },
     },
@@ -104,7 +105,7 @@ describe("updateCardのテスト", () => {
       name: "oldにキーがない場合recordにキーは含まれない",
       input: "./src/__tests__/trello_events/updateCard_idList_2.json",
       expected: {
-        [CardApp.name]: { value: "newName" },
+        [CardApp.name]: { value: "これは新しいカードです！！" },
         [CardApp.idList]: { value: "newIdList" },
       },
     },
@@ -683,7 +684,7 @@ describe("copyCardのテスト", () => {
       expected: {
         app: "",
         record: {
-          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.name]: { value: "これは新しいカードです！！" },
           [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
           [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
           [CardApp.idList]: { value: "5f1e8b1ed6438e403c6f18fe" },
@@ -696,7 +697,7 @@ describe("copyCardのテスト", () => {
       expected: {
         app: "",
         record: {
-          [CardApp.name]: { value: "これは新しいカードです" },
+          [CardApp.name]: { value: "これは新しいカードです！！" },
           [CardApp.id]: { value: "5f1590bb8a1a602edd449930" },
           [CardApp.link]: { value: "https://trello.com/c/ceDVYykj" },
         },

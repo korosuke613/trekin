@@ -6,9 +6,13 @@
       "data": {
         "card": {
           "id": "5f1590bb8a1a602edd449930",
-          "name": "これは新しいカードです！！",
+          "name": "ですよですよですよ",
           "idShort": 7,
           "shortLink": "ceDVYykj"
+        },
+        "list": {
+          "id": "5f1e8b1ed6438e403c6f18fe",
+          "name": "ToDo"
         },
         "board": {
           "id": "5f02821bf3e65f322beb3ea4",
@@ -26,7 +30,7 @@
             "type": "card",
             "id": "5f1590bb8a1a602edd449930",
             "shortLink": "ceDVYykj",
-            "text": "これは新しいカードです"
+            "text": "↑2020/08/20"
           },
           "list": {
             "type": "list",

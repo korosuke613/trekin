@@ -6,7 +6,7 @@
       "data": {
         "card": {
           "id": "5f1590bb8a1a602edd449930",
-          "name": "これは新しいカードです",
+          "name": "これは新しいカードです！！",
           "idShort": 7,
           "shortLink": "ceDVYykj"
         },
@@ -32,7 +32,7 @@
             "type": "card",
             "id": "5f1590bb8a1a602edd449930",
             "shortLink": "ceDVYykj",
-            "text": "これは新しいカードです"
+            "text": "これは新しいカードです！！"
           },
           "cardSource": {
             "type": "card",

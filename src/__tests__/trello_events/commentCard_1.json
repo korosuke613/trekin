@@ -56,7 +56,7 @@
         "text": "ahaha",
         "card": {
           "id": "5f3b92fcfce2935b2d06f77c",
-          "name": "キューに積まれろ！",
+          "name": "これは新しいカードです！！",
           "idShort": 28,
           "shortLink": "B5UAHDbt"
         },
@@ -100,7 +100,7 @@
             "hideIfContext": true,
             "id": "5f3b92fcfce2935b2d06f77c",
             "shortLink": "B5UAHDbt",
-            "text": "キューに積まれろ！"
+            "text": "これは新しいカードです！！"
           },
           "comment": {
             "type": "comment",
