@@ -1,5 +1,5 @@
 {
-  exclude: [
+  excludes: [
     {
       charactersOrLess: 12,
     }

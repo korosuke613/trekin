@@ -1,7 +1,7 @@
 import { Action } from "./Trello";
 
 export interface Setting {
-  exclude?: Array<{
+  excludes?: Array<{
     charactersOrLess?: number;
     match?: string;
   }>;
@@ -15,10 +15,10 @@ export class SettingGuardian {
   }
 
   public isSkipEvent(trelloAction: Action) {
-    if (this.setting?.exclude === undefined) {
+    if (this.setting?.excludes === undefined) {
       return false;
     }
-    const excludes = this.setting?.exclude;
+    const excludes = this.setting?.excludes;
 
     const isCharacterOrLess = (charactersOrLess: number) => {
       return charactersOrLess >= trelloAction.data.card.name.length;

@@ -1,5 +1,5 @@
 {
-  exclude: [
+  excludes: [
     {
       match: "↑2020/08/20",
     }

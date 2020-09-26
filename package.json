@@ -19,8 +19,6 @@
   "scripts": {
     "build": "npm-run-all -l -s clean -p build:*",
     "prerelease": "npm-run-all -p lint test -s build",
-    "build:umd_dev": "webpack --mode development",
-    "build:umd_prod": "webpack --mode production",
     "build:compile": "run-p compile",
     "compile": "run-p -l compile:*",
     "compile:esm": "tsc -p tsconfig.esm.json",

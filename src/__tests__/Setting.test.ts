@@ -37,7 +37,7 @@ describe("readSettingのテスト", () => {
       name: "ワーキングディレクトリにある.trekinrc.json5を読み込める",
       input: undefined,
       expected: {
-        exclude: [
+        excludes: [
           {
             charactersOrLess: 12,
           },
