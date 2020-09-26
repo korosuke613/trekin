@@ -1,19 +1,3 @@
-# [0.5.0](https://github.com/korosuke613/trekin/compare/v0.4.0...v0.5.0) (2020-09-26)
-
-
-### Bug Fixes
-
-* exclude -> excludes ([37e5c5d](https://github.com/korosuke613/trekin/commit/37e5c5d28b269809649f5fd8beee22d6dc99b76a))
-* lint ([6c88bf5](https://github.com/korosuke613/trekin/commit/6c88bf51912673f29fe2378284927dd9112eb93a))
-
-
-### Features
-
-* support charactorLength of exclude setting ([3bdc9c8](https://github.com/korosuke613/trekin/commit/3bdc9c8c9efdfe78e6c28470ea05a4ba50de2b42))
-* support match of exclude setting ([bf40739](https://github.com/korosuke613/trekin/commit/bf40739d65de4e274a2a98bc9ef2716b0528aae3))
-
-
-
 # [0.4.0](https://github.com/korosuke613/trekin/compare/v0.3.0...v0.4.0) (2020-09-16)
 
 
