@@ -84,6 +84,7 @@ export class Worker {
         return this.registerRecordIdToTrello();
       }
     }
+    return Promise.resolve();
   }
 
   async registerRecordIdToTrello() {

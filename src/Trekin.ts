@@ -21,11 +21,13 @@ export class Trekin {
   }
 
   public async readSetting(filePath: string | undefined = undefined) {
-    if (filePath === undefined) {
-      filePath = this.defaultSettingPath;
-    }
     this.guardian = new SettingGuardian(
-      JSON5.parse(fs.readFileSync(filePath, "utf-8"))
+      JSON5.parse(
+        fs.readFileSync(
+          filePath !== undefined ? filePath : this.defaultSettingPath,
+          "utf-8"
+        )
+      )
     );
   }
 
