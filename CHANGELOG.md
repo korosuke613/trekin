@@ -1,3 +1,13 @@
+## [0.5.1](https://github.com/korosuke613/trekin/compare/v0.4.0...v0.5.1) (2020-09-26)
+
+
+### Performance Improvements
+
+* add kintone app template ([56967c5](https://github.com/korosuke613/trekin/commit/56967c59f7b8c6037d37513732e6cd4db78a424b))
+* export some module ([4200e5d](https://github.com/korosuke613/trekin/commit/4200e5d1360bb44778c5df13e92e9541aa79e349))
+
+
+
 # [0.5.0](https://github.com/korosuke613/trekin/compare/v0.4.0...v0.5.0) (2020-09-26)
 
 
