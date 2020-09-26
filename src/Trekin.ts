@@ -58,6 +58,9 @@ export class Trekin {
   }
 
   public async postOperation(trelloAction: Action) {
+    if (this.guardian.isSkipEvent(trelloAction)) {
+      return Promise.resolve("Skip this event");
+    }
     this.worker.trelloAction = trelloAction;
     return this.worker.postAction();
   }
