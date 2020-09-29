@@ -1,3 +1,12 @@
+## [0.6.1](https://github.com/korosuke613/trekin/compare/v0.6.0...v0.6.1) (2020-09-29)
+
+
+### Bug Fixes
+
+* translate char(&) for addRecordIdToCardNameOfTrello ([986af6e](https://github.com/korosuke613/trekin/commit/986af6edb27d7c59137295219e2cc23d2ce16ef4))
+
+
+
 # [0.6.0](https://github.com/korosuke613/trekin/compare/v0.5.1...v0.6.0) (2020-09-29)
 
 
