@@ -597,23 +597,28 @@ export const addRecordIdToCardNameOfTrello = async (
   nowCardName: string,
   eptreId: string
 ) => {
-  let newName = nowCardName;
+  const translateSpecialChar = (s: string) => {
+    // カード名に半角の&が含まれているとカード名が途切れてしまうので全角に変換する。
+    return s.replace("&", "＆");
+  };
+
+  const translatedNowCardName = translateSpecialChar(nowCardName);
+  let newName = translatedNowCardName;
   const eptreIdRegexp = /^EPTRE-\d+:\s/;
   const newEPTREId = `EPTRE-${eptreId}: `;
-  const find = nowCardName.match(eptreIdRegexp);
+  const find = translatedNowCardName.match(eptreIdRegexp);
 
   if (find !== null) {
     // すでに別のカードIDが存在していた場合は上書きする（copyCardを想定）
     newName = newName.replace(eptreIdRegexp, newEPTREId);
   } else {
-    newName = `${newEPTREId}${nowCardName}`;
+    newName = `${newEPTREId}${translatedNowCardName}`;
   }
 
-  if (nowCardName === newName) {
+  if (translatedNowCardName === newName) {
     // 新しいカード名が現在のカード名と同じ場合無視する
     return undefined;
   }
-
   const fetch = require("node-fetch");
   const fetchUrl = `https://api.trello.com/1/cards/${cardId}?key=${trelloApiKey}&token=${trelloApiToken}&name=${encodeURI(
     newName
