@@ -1,3 +1,12 @@
+# [0.6.0](https://github.com/korosuke613/trekin/compare/v0.5.1...v0.6.0) (2020-09-29)
+
+
+### Features
+
+* support add kintone record id to card name ([0fcdc6c](https://github.com/korosuke613/trekin/commit/0fcdc6ca1c4ec94a80a255517a933fefe6c2cf84))
+
+
+
 ## [0.5.1](https://github.com/korosuke613/trekin/compare/v0.4.0...v0.5.1) (2020-09-26)
 
 
