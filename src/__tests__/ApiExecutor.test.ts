@@ -939,6 +939,22 @@ describe("addRecordIdToCardNameOfTrelloのテスト", () => {
           "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20EPTRE-123%E3%82%92%E3%81%B6%E3%81%A3%E5%A3%8A%E3%81%99",
       },
     },
+    {
+      name: "カード名にアンパサントが含まれている場合、全角に直す",
+      input: {
+        nowCardName: "ああああヒアリング & ああああああナイトについて考える",
+        eptreId: "126",
+      },
+      expected: {
+        newName:
+          "EPTRE-126: ああああヒアリング ＆ ああああああナイトについて考える",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%92%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0%20%EF%BC%86%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%8A%E3%82%A4%E3%83%88%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B",
+      },
+    },
   ];
 
   for (const { name, input, expected } of testcases) {
