@@ -1,3 +1,12 @@
+## [0.6.2](https://github.com/korosuke613/trekin/compare/v0.6.1...v0.6.2) (2020-09-29)
+
+
+### Bug Fixes
+
+* multiple and ([635f37c](https://github.com/korosuke613/trekin/commit/635f37c92f6da40e3985ddd8e5293fe4862c00b5))
+
+
+
 ## [0.6.1](https://github.com/korosuke613/trekin/compare/v0.6.0...v0.6.1) (2020-09-29)
 
 
