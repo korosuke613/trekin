@@ -883,3 +883,87 @@ describe("registerRecordIdToTrelloのテスト", () => {
     });
   }
 });
+
+describe("addRecordIdToCardNameOfTrelloのテスト", () => {
+  const testcases = [
+    {
+      name: "カード名にIDがつく",
+      input: {
+        nowCardName: "カード名だよ",
+        eptreId: "123",
+      },
+      expected: {
+        newName: "EPTRE-123: カード名だよ",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-123:%20%E3%82%AB%E3%83%BC%E3%83%89%E5%90%8D%E3%81%A0%E3%82%88",
+      },
+    },
+    {
+      name: "カード名にすでに同じIDがついてるのでスキップする",
+      input: {
+        nowCardName: "EPTRE-123: カード名だよ",
+        eptreId: "123",
+      },
+      expected: undefined,
+    },
+    {
+      name: "カード名に別のIDがついてるので上書きする",
+      input: {
+        nowCardName: "EPTRE-123: カード名だよ(コピー)",
+        eptreId: "125",
+      },
+      expected: {
+        newName: "EPTRE-125: カード名だよ(コピー)",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-125:%20%E3%82%AB%E3%83%BC%E3%83%89%E5%90%8D%E3%81%A0%E3%82%88(%E3%82%B3%E3%83%94%E3%83%BC)",
+      },
+    },
+    {
+      name: "カード名に別のIDがついてるが先頭じゃないので無視する",
+      input: {
+        nowCardName: "EPTRE-123をぶっ壊す",
+        eptreId: "126",
+      },
+      expected: {
+        newName: "EPTRE-126: EPTRE-123をぶっ壊す",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20EPTRE-123%E3%82%92%E3%81%B6%E3%81%A3%E5%A3%8A%E3%81%99",
+      },
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      jest.mock("node-fetch", () => {
+        return (url: string) => {
+          return Promise.resolve({
+            status: 200,
+            statusText: "OK",
+            text: () => {
+              return "ok text";
+            },
+            url: url,
+          });
+        };
+      });
+
+      const actual = await ApiExecutor.addRecordIdToCardNameOfTrello(
+        "cardId",
+        "trelloApiKey",
+        "trelloApiToken",
+        input.nowCardName,
+        input.eptreId
+      );
+      expect(actual).toEqual(expected);
+    });
+  }
+});

@@ -590,6 +590,51 @@ export const registerRecordIdToTrello = async (
   };
 };
 
+export const addRecordIdToCardNameOfTrello = async (
+  cardId: string,
+  trelloApiKey: string,
+  trelloApiToken: string,
+  nowCardName: string,
+  eptreId: string
+) => {
+  let newName = nowCardName;
+  const eptreIdRegexp = /^EPTRE-\d+:\s/;
+  const newEPTREId = `EPTRE-${eptreId}: `;
+  const find = nowCardName.match(eptreIdRegexp);
+
+  if (find !== null) {
+    // すでに別のカードIDが存在していた場合は上書きする（copyCardを想定）
+    newName = newName.replace(eptreIdRegexp, newEPTREId);
+  } else {
+    newName = `${newEPTREId}${nowCardName}`;
+  }
+
+  if (nowCardName === newName) {
+    // 新しいカード名が現在のカード名と同じ場合無視する
+    return undefined;
+  }
+
+  const fetch = require("node-fetch");
+  const fetchUrl = `https://api.trello.com/1/cards/${cardId}?key=${trelloApiKey}&token=${trelloApiToken}&name=${encodeURI(
+    newName
+  )}`;
+  console.log(fetchUrl);
+  const fetchPromise = await fetch(fetchUrl, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  return {
+    newName: newName,
+    url: fetchPromise.url,
+    status: fetchPromise.status,
+    statusText: fetchPromise.statusText,
+    text: await fetchPromise.text(),
+  };
+};
+
 export const ApiExecutor = {
   createCard,
   updateCard,
@@ -610,4 +655,5 @@ export const ApiExecutor = {
   getRecordIdFromList,
   commentCard,
   registerRecordIdToTrello,
+  addRecordIdToCardNameOfTrello,
 };

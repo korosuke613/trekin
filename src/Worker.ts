@@ -76,15 +76,45 @@ export class Worker {
   }
 
   public async postAction() {
+    const result = [];
+
     switch (this.trelloAction.type) {
       case ActionType.CREATE_CARD: {
-        return this.registerRecordIdToTrello();
+        result.push(await this.registerRecordIdToTrello());
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
       }
       case ActionType.COPY_CARD: {
-        return this.registerRecordIdToTrello();
+        result.push(this.registerRecordIdToTrello());
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
+      }
+      case ActionType.UPDATE_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
+      }
+      case ActionType.ADD_LABEL_TO_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
+      }
+      case ActionType.REMOVE_LABEL_FROM_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
+      }
+      case ActionType.ADD_MEMBER_TO_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
+      }
+      case ActionType.REMOVE_MEMBER_FROM_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
+      }
+      case ActionType.COMMENT_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+        break;
       }
     }
-    return Promise.resolve();
+    return Promise.resolve(result);
   }
 
   async registerRecordIdToTrello() {
@@ -103,6 +133,25 @@ export class Worker {
       this.apps.cards.id,
       this.trelloCert.apiKey,
       this.trelloCert.apiToken,
+      cardRecordId
+    );
+  }
+
+  async addRecordIdToCardNameOfTrello() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const cardRecordId = await this.getCardRecordIdIfNotExistsCreateCard(
+      client
+    );
+    if (cardRecordId === undefined) {
+      throw new Error("Not exists Card");
+    }
+    return ApiExecutor.addRecordIdToCardNameOfTrello(
+      this.trelloAction.data.card.id,
+      this.trelloCert.apiKey,
+      this.trelloCert.apiToken,
+      this.trelloAction.data.card.name,
       cardRecordId
     );
   }
