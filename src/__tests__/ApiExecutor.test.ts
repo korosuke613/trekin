@@ -972,6 +972,56 @@ describe("addRecordIdToCardNameOfTrelloのテスト", () => {
           "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%92%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0%20%EF%BC%86%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%8A%E3%82%A4%E3%83%88%20%EF%BC%86%20aaa%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B",
       },
     },
+    {
+      name: "カード名にハッシュ(#)が含まれている場合、全角に直す",
+      input: {
+        nowCardName: "ああああヒアリング #1 ああああああナイトについて考える",
+        eptreId: "126",
+      },
+      expected: {
+        newName:
+          "EPTRE-126: ああああヒアリング ＃1 ああああああナイトについて考える",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%92%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0%20%EF%BC%831%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%8A%E3%82%A4%E3%83%88%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B",
+      },
+    },
+    {
+      name: "カード名に複数のハッシュ(#)が含まれている場合、全角に直す",
+      input: {
+        nowCardName:
+          "ああああヒアリング #1 ああああああナイト # aaaについて考える",
+        eptreId: "126",
+      },
+      expected: {
+        newName:
+          "EPTRE-126: ああああヒアリング ＃1 ああああああナイト ＃ aaaについて考える",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%92%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0%20%EF%BC%831%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%8A%E3%82%A4%E3%83%88%20%EF%BC%83%20aaa%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B",
+      },
+    },
+    {
+      name: "カード名にアンパサンドとハッシュ(#)が含まれている場合、全角に直す",
+      input: {
+        nowCardName:
+          "ああああヒアリング #1 ああああああナイト & aaaについて考える",
+        eptreId: "126",
+      },
+      expected: {
+        newName:
+          "EPTRE-126: ああああヒアリング ＃1 ああああああナイト ＆ aaaについて考える",
+        status: 200,
+        statusText: "OK",
+        text: "ok text",
+        url:
+          "https://api.trello.com/1/cards/cardId?key=trelloApiKey&token=trelloApiToken&name=EPTRE-126:%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%92%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0%20%EF%BC%831%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%81%82%E3%83%8A%E3%82%A4%E3%83%88%20%EF%BC%86%20aaa%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B",
+      },
+    },
   ];
 
   for (const { name, input, expected } of testcases) {

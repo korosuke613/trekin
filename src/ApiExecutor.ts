@@ -598,8 +598,10 @@ export const addRecordIdToCardNameOfTrello = async (
   eptreId: string
 ) => {
   const translateSpecialChar = (s: string) => {
-    // カード名に半角の&が含まれているとカード名が途切れてしまうので全角に変換する。
-    return s.replace(/&/g, "＆");
+    // カード名に半角の & または # が含まれているとカード名が途切れてしまうので全角に変換する。
+    const replacedAmpersand = s.replace(/&/g, "＆");
+    const replacedSharp = replacedAmpersand.replace(/#/g, "＃");
+    return replacedSharp;
   };
 
   const translatedNowCardName = translateSpecialChar(nowCardName);
