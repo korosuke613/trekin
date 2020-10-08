@@ -1,3 +1,12 @@
+## [0.6.3](https://github.com/korosuke613/trekin/compare/v0.6.2...v0.6.3) (2020-10-08)
+
+
+### Bug Fixes
+
+* Card name does not reflect the half-width sharp ([ade4b2f](https://github.com/korosuke613/trekin/commit/ade4b2fd06a5e7001522c3c204813d0e8d8f9ae8))
+
+
+
 ## [0.6.2](https://github.com/korosuke613/trekin/compare/v0.6.1...v0.6.2) (2020-09-29)
 
 
