@@ -1,6 +1,7 @@
 import { Action } from "./Trello";
 
 export interface Setting {
+  prefixRecordId?: string;
   excludes?: Array<{
     charactersOrLess?: number;
     match?: string;
@@ -14,6 +15,10 @@ export class SettingGuardian {
 
   constructor(setting: Setting = {}) {
     this.setting = setting;
+  }
+
+  public getPrefixRecordId() {
+    return this.setting.prefixRecordId ?? "DEFAULT";
   }
 
   public isAddDoneTime(listName: string) {

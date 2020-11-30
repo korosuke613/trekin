@@ -53,6 +53,7 @@ export class Trekin {
     if (this.guardian.isSkipEvent(trelloAction)) {
       return Promise.resolve("Skip this event");
     }
+    this.worker.setting = this.guardian;
     this.worker.trelloAction = trelloAction;
     return this.worker.action();
   }

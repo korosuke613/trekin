@@ -19,22 +19,7 @@ export class Worker {
     this.trelloAction = {} as Action;
   }
 
-  public async action(): Promise<
-    | {
-        app: string;
-        id?: string;
-        record: {
-          [key: string]: {
-            value: string | string[] | Array<{ id: string }> | undefined;
-          };
-        };
-      }
-    | {
-        app: string;
-        comment: { text: string };
-      }
-    | { [key: string]: { value: string } }
-  > {
+  public async action() {
     switch (this.trelloAction.type) {
       case ActionType.CREATE_CARD: {
         return this.createCard();
@@ -71,6 +56,10 @@ export class Worker {
       }
       case ActionType.COMMENT_CARD: {
         return this.commentCard();
+      }
+      case ActionType.ADD_ATTACHMENT_TO_CARD: {
+        console.log("Add attachment to card");
+        return this.attachmentToCard();
       }
     }
 
@@ -116,6 +105,9 @@ export class Worker {
         result.push(await this.addRecordIdToCardNameOfTrello());
         break;
       }
+      case ActionType.ADD_ATTACHMENT_TO_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
+      }
     }
     return Promise.resolve(result);
   }
@@ -130,13 +122,17 @@ export class Worker {
     if (cardRecordId === undefined) {
       throw new Error("Not exists Card");
     }
+    if (this.setting === undefined) {
+      throw new Error("Need setting");
+    }
     return ApiExecutor.registerRecordIdToTrello(
       this.trelloAction.data.card.id,
       this.apps.baseUrl,
       this.apps.cards.id,
       this.trelloCert.apiKey,
       this.trelloCert.apiToken,
-      cardRecordId
+      cardRecordId,
+      this.setting.getPrefixRecordId()
     );
   }
 
@@ -150,12 +146,16 @@ export class Worker {
     if (cardRecordId === undefined) {
       throw new Error("Not exists Card");
     }
+    if (this.setting === undefined) {
+      throw new Error("Need setting");
+    }
     return ApiExecutor.addRecordIdToCardNameOfTrello(
       this.trelloAction.data.card.id,
       this.trelloCert.apiKey,
       this.trelloCert.apiToken,
       this.trelloAction.data.card.name,
-      cardRecordId
+      cardRecordId,
+      this.setting.getPrefixRecordId()
     );
   }
 
@@ -470,6 +470,49 @@ export class Worker {
       this.apps.cards.id,
       recordId,
       doneTime
+    );
+  }
+
+  async getRecordIdAndAttachmentIdsFromCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const cardInfo = await ApiExecutor.getRecordIdAndAttachmentIdsFromCard(
+      client,
+      this.apps.cards.id,
+      this.trelloAction.data
+    );
+    if (cardInfo === undefined) {
+      throw new Error("Card is no such exists");
+    }
+
+    return cardInfo;
+  }
+
+  async attachmentToCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+
+    const attachmentName = this.trelloAction.data.attachment.name;
+
+    if (this.setting !== undefined) {
+      const checkDuplicate = new RegExp(
+        this.setting.getPrefixRecordId() + "-\\d+"
+      );
+      const find = attachmentName.match(checkDuplicate);
+      if (find !== null)
+        return `Skip attachmentToCard because ${attachmentName}`;
+    }
+
+    const cardInfo = await this.getRecordIdAndAttachmentIdsFromCard();
+
+    return ApiExecutor.attachmentToCard(
+      client,
+      this.apps.cards.id,
+      this.trelloAction.data,
+      cardInfo.recordId,
+      cardInfo.attachmentsTableIds
     );
   }
 }

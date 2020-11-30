@@ -29,6 +29,9 @@ export const CardApp: AppFieldIDs = {
   closed: "CLOSED",
   member: "USER",
   doneTime: "DONE_TIME",
+  attachmentTable: "ATTACHMENT_TABLE",
+  attachmentName: "ATTACHMENT_NAME",
+  attachmentLink: "ATTACHMENT_LINK",
 };
 
 export const ListApp: AppFieldIDs = {
