@@ -120,6 +120,11 @@ trekin.guardian.setting = {
 |charactersOrLess|number|If the card name is less than or equal to the set value, exclude it.|
 |match|regexp|If the card name matches to the set regular expression, exclude it.|
 
+## Release NPM Package
+1. Comment `@shipjs prepare` to pull request. ([example](https://github.com/korosuke613/trekin/pull/36))
+2. A pull request named "chore: release vX.X.X.X" is generated.([example](https://github.com/korosuke613/trekin/pull/41))
+3. To "Squash and merge" that pull request.
+4. Automatic release.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
