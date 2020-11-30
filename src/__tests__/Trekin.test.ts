@@ -735,3 +735,91 @@ describe("commentCardのテスト", () => {
     });
   }
 });
+
+describe("addAttachmentToCardのテスト", () => {
+  const testcases = [
+    {
+      name: "すでに添付ファイルがあっても追加できる",
+      input: "./src/__tests__/trello_events/addAttachmentToCard_image_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          ATTACHMENT_TABLE: {
+            value: [
+              {
+                id: "user",
+              },
+              {
+                value: {
+                  ATTACHMENT_LINK:
+                    "https://trello-attachments.s3.amazonaws.com/5f02821bf3e65f322beb3ea4/5f1e865323566c0f75e0c961/a55cc55c80fb1acaef879692dd13f4b1/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88_2020-08-23_14.22.18.png",
+                  ATTACHMENT_NAME: "スクリーンショット 2020-08-23 14.22.18.png",
+                },
+              },
+            ],
+          },
+        },
+      },
+      mock: {
+        getRecords: (params: any) => {
+          const returnValue = {
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.attachmentTable]: {
+                  value: [{ id: "user", name: "aaaa" }],
+                },
+              },
+            ],
+          };
+          return Promise.resolve(returnValue);
+        },
+      },
+    },
+    {
+      name: "添付ファイルがなくても追加できる",
+      input: "./src/__tests__/trello_events/addAttachmentToCard_link_1.json",
+      expected: {
+        app: "",
+        id: "5f1590bb8a1a602edd449930",
+        record: {
+          ATTACHMENT_TABLE: {
+            value: [
+              {
+                value: {
+                  ATTACHMENT_LINK:
+                    "https://trello.com/b/Sqsia9EM/trello-api%E3%83%86%E3%82%B9%E3%83%88",
+                  ATTACHMENT_NAME:
+                    "https://trello.com/b/Sqsia9EM/trello-api%E3%83%86%E3%82%B9%E3%83%88",
+                },
+              },
+            ],
+          },
+        },
+      },
+      mock: {
+        getRecords: (params: any) => {
+          const returnValue = {
+            records: [
+              {
+                $id: { value: "5f1590bb8a1a602edd449930" },
+                [CardApp.attachmentTable]: {
+                  value: [],
+                },
+              },
+            ],
+          };
+          return Promise.resolve(returnValue);
+        },
+      },
+    },
+  ];
+
+  for (const { name, input, expected, mock } of testcases) {
+    test(name, async () => {
+      const actual = await runOperationKintone(input, mock);
+      expect(actual).toEqual(expected);
+    });
+  }
+});

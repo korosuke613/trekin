@@ -199,3 +199,29 @@ describe("addDoneTimeのテスト", () => {
     });
   }
 });
+
+describe("getPrefixRecordIdのテスト", () => {
+  const testcases = [
+    {
+      name: "設定しているprefixRecordIdを返す",
+      input: ["./src/__tests__/trekin_settings/prefixRecordId.trekinrc.json5"],
+      expected: "TEST",
+    },
+    {
+      name: "未設定の場合はDEFAULTを返す",
+      input: [
+        "./src/__tests__/trekin_settings/enableAddDoneTime_1.trekinrc.json5",
+      ],
+      expected: "DEFAULT",
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const t = await createTrekin();
+      await t.readSetting(input[0]);
+      const actual = t.guardian.getPrefixRecordId();
+      expect(actual).toEqual(expected);
+    });
+  }
+});
