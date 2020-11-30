@@ -1,3 +1,20 @@
+# [0.7.0](https://github.com/korosuke613/trekin/compare/v0.6.3...v0.7.0) (2020-11-30)
+
+
+### Bug Fixes
+
+* codecov status setting ([80f8891](https://github.com/korosuke613/trekin/commit/80f8891c3e5ded7545e6d5f588b158d710b8b356))
+* Ignore the attachments that trekin adds ([fb1af53](https://github.com/korosuke613/trekin/commit/fb1af535459adb3dac40427051d2c6b8a91392f1))
+
+
+### Features
+
+* able to set the record ID prefix ([1c1bc3a](https://github.com/korosuke613/trekin/commit/1c1bc3ac13d08f144ca3b56fa7de1b6c05a3c63b))
+* Add option, add time of done to record ([64a95f2](https://github.com/korosuke613/trekin/commit/64a95f23aefeaa05673043e65471fe2ddfa55670))
+* support addAttachmentToCard ([64de3d7](https://github.com/korosuke613/trekin/commit/64de3d7ab362ed8fcb7e504661d494e76df03bba))
+
+
+
 ## [0.6.3](https://github.com/korosuke613/trekin/compare/v0.6.2...v0.6.3) (2020-10-08)
 
 
