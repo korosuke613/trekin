@@ -19,22 +19,7 @@ export class Worker {
     this.trelloAction = {} as Action;
   }
 
-  public async action(): Promise<
-    | {
-        app: string;
-        id?: string;
-        record: {
-          [key: string]: {
-            value: string | string[] | Array<{ id: string }> | undefined;
-          };
-        };
-      }
-    | {
-        app: string;
-        comment: { text: string };
-      }
-    | { [key: string]: { value: string } }
-  > {
+  public async action() {
     switch (this.trelloAction.type) {
       case ActionType.CREATE_CARD: {
         return this.createCard();
@@ -508,6 +493,18 @@ export class Worker {
     const client = await this.kintoneClientCreator.createKintoneClient([
       this.apps.cards.token,
     ]);
+
+    const attachmentName = this.trelloAction.data.attachment.name;
+
+    if (this.setting !== undefined) {
+      const checkDuplicate = new RegExp(
+        this.setting.getPrefixRecordId() + "-\\d+"
+      );
+      const find = attachmentName.match(checkDuplicate);
+      if (find !== null)
+        return `Skip attachmentToCard because ${attachmentName}`;
+    }
+
     const cardInfo = await this.getRecordIdAndAttachmentIdsFromCard();
 
     return ApiExecutor.attachmentToCard(
