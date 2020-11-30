@@ -5,20 +5,29 @@ export interface Setting {
     charactersOrLess?: number;
     match?: string;
   }>;
+  isAddDoneTime?: boolean;
+  doneListName?: string;
 }
 
 export class SettingGuardian {
-  public setting: Setting | undefined;
+  public setting: Setting;
 
   constructor(setting: Setting = {}) {
     this.setting = setting;
+  }
+
+  public isAddDoneTime(listName: string) {
+    if (this.setting.isAddDoneTime === undefined || !this.setting.isAddDoneTime)
+      return false;
+
+    return listName === (this.setting.doneListName ?? "Done");
   }
 
   public isSkipEvent(trelloAction: Action) {
     if (this.setting?.excludes === undefined) {
       return false;
     }
-    const excludes = this.setting?.excludes;
+    const excludes = this.setting.excludes;
 
     const isCharacterOrLess = (charactersOrLess: number) => {
       return charactersOrLess >= trelloAction.data.card.name.length;

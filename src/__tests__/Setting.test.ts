@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
 import { Trekin } from "../Trekin";
-import { Action } from "../Trello";
+import { Action, ListShort } from "../Trello";
 import fs from "fs";
 import { Worker } from "../Worker";
 
@@ -133,6 +133,68 @@ describe("skipのテスト", () => {
       const action: Action = JSON.parse(await fs.readFileSync(input[1], "utf8"))
         .body.action;
       const actual = await t.operation(action);
+      expect(actual).toEqual(expected);
+    });
+  }
+});
+
+describe("addDoneTimeのテスト", () => {
+  const testcases = [
+    {
+      name:
+        "カスタムdone名とアフターリスト名が一致するのでAddDoneTime()でtrueを返す",
+      input: [
+        "./src/__tests__/trekin_settings/enableAddDoneTime_1.trekinrc.json5",
+        "./src/__tests__/trello_events/updateCard_idList_3.json",
+      ],
+      expected: true,
+    },
+    {
+      name:
+        "カスタムdone名とアフターリスト名が一致しないのでAddDoneTime()でfalseを返す",
+      input: [
+        "./src/__tests__/trekin_settings/enableAddDoneTime_1.trekinrc.json5",
+        "./src/__tests__/trello_events/updateCard_idList_2.json",
+      ],
+      expected: false,
+    },
+    {
+      name:
+        "デフォルトdone名とアフターリスト名が一致するのでAddDoneTime()でtrueを返す",
+      input: [
+        "./src/__tests__/trekin_settings/enableAddDoneTime_2.trekinrc.json5",
+        "./src/__tests__/trello_events/updateCard_idList_4.json",
+      ],
+      expected: true,
+    },
+    {
+      name:
+        "デフォルトdone名とアフターリスト名が一致しないのでAddDoneTime()でfalseを返す",
+      input: [
+        "./src/__tests__/trekin_settings/enableAddDoneTime_2.trekinrc.json5",
+        "./src/__tests__/trello_events/updateCard_idList_2.json",
+      ],
+      expected: false,
+    },
+    {
+      name: "isAddDoneTimeがfalseなのでAddDoneTime()でfalseを返す",
+      input: [
+        "./src/__tests__/trekin_settings/.trekinrc.json5",
+        "./src/__tests__/trello_events/updateCard_idList_4.json",
+      ],
+      expected: false,
+    },
+  ];
+
+  for (const { name, input, expected } of testcases) {
+    test(name, async () => {
+      const t = await createTrekin();
+      await t.readSetting(input[0]);
+      const action: Action = JSON.parse(await fs.readFileSync(input[1], "utf8"))
+        .body.action;
+      const actual = t.guardian.isAddDoneTime(
+        (action.data.listAfter as ListShort).name
+      );
       expect(actual).toEqual(expected);
     });
   }

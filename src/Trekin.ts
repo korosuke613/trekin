@@ -62,6 +62,7 @@ export class Trekin {
       return Promise.resolve("Skip this event");
     }
     this.worker.trelloAction = trelloAction;
+    this.worker.setting = this.guardian;
     return this.worker.postAction();
   }
 }
