@@ -137,13 +137,17 @@ export class Worker {
     if (cardRecordId === undefined) {
       throw new Error("Not exists Card");
     }
+    if (this.setting === undefined) {
+      throw new Error("Need setting");
+    }
     return ApiExecutor.registerRecordIdToTrello(
       this.trelloAction.data.card.id,
       this.apps.baseUrl,
       this.apps.cards.id,
       this.trelloCert.apiKey,
       this.trelloCert.apiToken,
-      cardRecordId
+      cardRecordId,
+      this.setting.getPrefixRecordId()
     );
   }
 
@@ -157,12 +161,16 @@ export class Worker {
     if (cardRecordId === undefined) {
       throw new Error("Not exists Card");
     }
+    if (this.setting === undefined) {
+      throw new Error("Need setting");
+    }
     return ApiExecutor.addRecordIdToCardNameOfTrello(
       this.trelloAction.data.card.id,
       this.trelloCert.apiKey,
       this.trelloCert.apiToken,
       this.trelloAction.data.card.name,
-      cardRecordId
+      cardRecordId,
+      this.setting.getPrefixRecordId()
     );
   }
 

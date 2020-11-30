@@ -635,14 +635,15 @@ export const registerRecordIdToTrello = async (
   cardAppId: string,
   trelloApiKey: string,
   trelloApiToken: string,
-  eptreId: string
+  eptreId: string,
+  prefixRecordId: string
 ) => {
   const cardUrl = urlJoin(baseUrl, `/k/${cardAppId}/show#record=${eptreId}`);
 
   // This code sample uses the 'node-fetch' library:
   // https://www.npmjs.com/package/node-fetch
   const fetch = require("node-fetch");
-  const fetchUrl = `https://api.trello.com/1/cards/${id}/attachments?key=${trelloApiKey}&token=${trelloApiToken}&name=EPTRE-${eptreId}&url=${encodeURIComponent(
+  const fetchUrl = `https://api.trello.com/1/cards/${id}/attachments?key=${trelloApiKey}&token=${trelloApiToken}&name=${prefixRecordId}-${eptreId}&url=${encodeURIComponent(
     cardUrl
   )}`;
   console.log(fetchUrl);
@@ -666,7 +667,8 @@ export const addRecordIdToCardNameOfTrello = async (
   trelloApiKey: string,
   trelloApiToken: string,
   nowCardName: string,
-  eptreId: string
+  eptreId: string,
+  prefixRecordID: string
 ) => {
   const translateSpecialChar = (s: string) => {
     // カード名に半角の & または # が含まれているとカード名が途切れてしまうので全角に変換する。
@@ -677,8 +679,8 @@ export const addRecordIdToCardNameOfTrello = async (
 
   const translatedNowCardName = translateSpecialChar(nowCardName);
   let newName = translatedNowCardName;
-  const eptreIdRegexp = /^EPTRE-\d+:\s/;
-  const newEPTREId = `EPTRE-${eptreId}: `;
+  const eptreIdRegexp = new RegExp("^" + prefixRecordID + "-\\d+:\\s");
+  const newEPTREId = `${prefixRecordID}-${eptreId}: `;
   const find = translatedNowCardName.match(eptreIdRegexp);
 
   if (find !== null) {

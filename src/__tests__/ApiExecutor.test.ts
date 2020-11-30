@@ -877,7 +877,8 @@ describe("registerRecordIdToTrelloのテスト", () => {
         "32",
         "trelloApiKey",
         "trelloApiToken",
-        "13"
+        "13",
+        "EPTRE"
       );
       expect(actual).toEqual(expected);
     });
@@ -1044,7 +1045,8 @@ describe("addRecordIdToCardNameOfTrelloのテスト", () => {
         "trelloApiKey",
         "trelloApiToken",
         input.nowCardName,
-        input.eptreId
+        input.eptreId,
+        "EPTRE"
       );
       expect(actual).toEqual(expected);
     });
