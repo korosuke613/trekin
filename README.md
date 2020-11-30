@@ -1,9 +1,9 @@
 # trekin
 A npm library that connects Trello to kintone.
 
-[![npm version](https://badge.fury.io/js/trekin.svg)](https://www.npmjs.com/package/trekin) [![CI](https://github.com/korosuke613/trekin/workflows/CI/badge.svg)](https://github.com/korosuke613/trekin/actions?query=workflow%3ACI) [![codecov](https://codecov.io/gh/korosuke613/trekin/branch/master/graph/badge.svg?token=5lTvndP77g)](https://codecov.io/gh/korosuke613/trekin)
+<!--[![npm version](https://badge.fury.io/js/trekin.svg)](https://www.npmjs.com/package/trekin) [![CI](https://github.com/korosuke613/trekin/workflows/CI/badge.svg)](https://github.com/korosuke613/trekin/actions?query=workflow%3ACI) [![codecov](https://codecov.io/gh/korosuke613/trekin/branch/master/graph/badge.svg?token=5lTvndP77g)](https://codecov.io/gh/korosuke613/trekin)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkorosuke613%2Ftrekin.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkorosuke613%2Ftrekin?ref=badge_shield)
-
+-->
 
 ## Installation
 
@@ -31,6 +31,7 @@ https://github.com/korosuke613/trekin-sample
 - addMemberToCard
 - removeMemberFromCard
 - commentCard
+- addAttachmentToCard
 
 ## Usage
 
@@ -95,6 +96,13 @@ console.info("Post operation\n" + JSON.stringify(postResult));
 Trekin support Card exclusion settings.
 If all the conditions enclosed in braces are met, the event is skipped.
 
+|option|type|default|description|
+|---|---|---|---|
+|charactersOrLess|number| |If the card name is less than or equal to the set value, exclude it.|
+|match|regexp| |If the card name matches to the set regular expression, exclude it.|
+
+###### example
+
 ```typescript
 trekin.guardian.setting = {
   excludes: [
@@ -113,12 +121,46 @@ trekin.guardian.setting = {
 - Card name is *Prepare for the event on 27/09/2020.*, not skip.
 - Card name is *This is createCard Test!!*, skip.
 
-##### Exclude option list
+##### Enable become Done time
+Trekin can add the date and time the card was moved to the Done list to the record. It needs to be turned on in the settings.
 
-|option|type|description|
-|---|---|---|
-|charactersOrLess|number|If the card name is less than or equal to the set value, exclude it.|
-|match|regexp|If the card name matches to the set regular expression, exclude it.|
+|option|type|default|description|
+|---|---|---|---|
+|isAddDoneTime|boolean|false|Register the date and time the card was moved to the Done list in the record.|
+|doneListName|string|"Done"|The list name corresponding to "Done".|
+
+
+###### example
+```typescript
+trekin.guardian.setting = {
+  isAddDoneTime: true,
+  doneListName: "🎉Done"
+};
+```
+
+1. Move card at 2020/11/30 13:00(UTC). (`👦Todo`→`🎉Done`)
+2. Update Record. (Done time: `2020/11/30 13:00`)
+
+##### Utilize kintone's record ID linking feature
+Trekin gives the record ID to the top of the card. By assigning a record ID, you can use kintone's record ID link feature.
+
+|option|type|default|description|
+|---|---|---|---|
+|prefixRecordId|string|"DEFAULT"|Record ID prefix name|
+
+
+###### example
+
+```typescript
+trekin.guardian.setting = {
+  prefixRecordId: "EPTRE",
+};
+```
+
+1. Create Card. (Card name: `This is test`)
+2. Add Card to Record. (Record name: `EPTRE-123: This is test`) 
+3. Update Card name. (Card name: `EPTRE-123: This is test`)
+4. The attached record link to Card. (Link name: `EPTRE-123`)
 
 ## Release NPM Package
 1. Comment `@shipjs prepare` to pull request. ([example](https://github.com/korosuke613/trekin/pull/36))
