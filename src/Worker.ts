@@ -3,12 +3,14 @@ import { Apps } from "./Kintone";
 import { KintoneClientCreator } from "./KintoneClientCreator";
 import { ApiExecutor } from "./ApiExecutor";
 import { KintoneRestAPIClient } from "@kintone/rest-api-client";
+import { SettingGuardian } from "./Setting";
 
 export class Worker {
   public trelloAction: Action;
   private readonly kintoneClientCreator: KintoneClientCreator;
   private readonly apps: Apps;
   private readonly trelloCert: Certificate;
+  public setting?: SettingGuardian;
 
   constructor(apps: Apps, trelloCert: Certificate) {
     this.kintoneClientCreator = new KintoneClientCreator(apps.baseUrl);
@@ -91,6 +93,7 @@ export class Worker {
       }
       case ActionType.UPDATE_CARD: {
         result.push(await this.addRecordIdToCardNameOfTrello());
+        result.push(await this.addTimeOfDoneToRecord());
         break;
       }
       case ActionType.ADD_LABEL_TO_CARD: {
@@ -174,7 +177,7 @@ export class Worker {
         this.trelloAction.data
       );
     }
-    return cardRecordId;
+    return cardRecordId as string;
   }
 
   async getKintoneUserCodeIfNotExistsAddMember(client: KintoneRestAPIClient) {
@@ -445,6 +448,28 @@ export class Worker {
       this.apps.cards.id,
       this.trelloAction.display.entities,
       recordId as string
+    );
+  }
+
+  async addTimeOfDoneToRecord() {
+    if (
+      this.setting === undefined ||
+      this.trelloAction.data.listAfter === undefined ||
+      !this.setting.isAddDoneTime(this.trelloAction.data.listAfter.name)
+    )
+      // 設定がない or リストの移動でない or Doneへの移動でないなら何もせずreturn
+      return "Skip addTimeOfDoneToRecord";
+
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const recordId = await this.getCardRecordIdIfNotExistsCreateCard(client);
+    const doneTime = this.trelloAction.date;
+    return ApiExecutor.addTimeOfDoneToRecord(
+      client,
+      this.apps.cards.id,
+      recordId,
+      doneTime
     );
   }
 }

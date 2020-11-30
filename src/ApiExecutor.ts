@@ -541,6 +541,25 @@ const removeMemberFromCard = async (
   return params;
 };
 
+const addTimeOfDoneToRecord = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  recordId: string,
+  doneTime: Date
+) => {
+  const params = {
+    app: appId,
+    id: recordId,
+    record: {
+      [CardApp.doneTime]: {
+        value: doneTime,
+      },
+    },
+  };
+  await client.record.updateRecord(params);
+  return params;
+};
+
 const commentCard = async (
   client: KintoneRestAPIClient,
   appId: string,
@@ -660,6 +679,7 @@ export const ApiExecutor = {
   getRecordIdFromLabelOfSame,
   removeMemberFromCard,
   getRecordIdFromList,
+  addTimeOfDoneToRecord,
   commentCard,
   registerRecordIdToTrello,
   addRecordIdToCardNameOfTrello,

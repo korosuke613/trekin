@@ -28,6 +28,7 @@ export const CardApp: AppFieldIDs = {
   dueReminder: "DUE_REMINDER",
   closed: "CLOSED",
   member: "USER",
+  doneTime: "DONE_TIME",
 };
 
 export const ListApp: AppFieldIDs = {
