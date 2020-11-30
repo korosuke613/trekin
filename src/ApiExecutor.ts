@@ -220,6 +220,58 @@ const getRecordIdAndLabelIdsFromCard = async (
   return { recordId, tableIds };
 };
 
+/**
+ * CardアプリからレコードIDと添付ファイルのIDを取得する
+ * @param client
+ * @param appId
+ * @param data
+ */
+const getRecordIdAndAttachmentIdsFromCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data
+): Promise<
+  | {
+      recordId: string;
+      attachmentsTableIds: Array<{
+        id: string;
+      }>;
+    }
+  | undefined
+> => {
+  const cardId = data.card.id;
+  const res = await client.record.getRecords({
+    app: appId,
+    fields: ["$id", CardApp.attachmentTable],
+    query: `${CardApp.id}="${cardId}"`,
+  });
+  if (res.records.length === 0) {
+    return undefined;
+  }
+  const recordId =
+    res.records[0].$id.value !== null
+      ? res.records[0].$id.value.toString()
+      : "";
+  const attachments = res.records[0][CardApp.attachmentTable].value as Array<{
+    id: string;
+    value: {
+      [key: string]: any;
+    };
+  }>;
+  const attachmentsTableIds = attachments.map((x) => {
+    return {
+      id: x.id,
+    };
+  });
+  console.info(
+    `getRecordIdAndLabelIdsFromCard\nCard record ID: ${recordId}\nCard with attachment table IDs: ${JSON.stringify(
+      attachmentsTableIds
+    )}`
+  );
+
+  return { recordId, attachmentsTableIds };
+};
+
 const addMember = async (
   client: KintoneRestAPIClient,
   appId: string,
@@ -661,6 +713,40 @@ export const addRecordIdToCardNameOfTrello = async (
   };
 };
 
+const attachmentToCard = async (
+  client: KintoneRestAPIClient,
+  appId: string,
+  data: Data,
+  recordId: string,
+  attachmentsTableIds: Array<{
+    id: string;
+  }>
+) => {
+  const tableRecords: any[] = attachmentsTableIds.map((records) => {
+    return {
+      id: records.id.toString(),
+    };
+  });
+  tableRecords.push({
+    value: {
+      [CardApp.attachmentName]: data.attachment.name,
+      [CardApp.attachmentLink]: data.attachment.url,
+    },
+  });
+  const params = {
+    app: appId,
+    id: recordId,
+    record: {
+      [CardApp.attachmentTable]: {
+        value: tableRecords,
+      },
+    },
+  };
+  await client.record.updateRecord(params);
+
+  return params;
+};
+
 export const ApiExecutor = {
   createCard,
   updateCard,
@@ -683,4 +769,6 @@ export const ApiExecutor = {
   commentCard,
   registerRecordIdToTrello,
   addRecordIdToCardNameOfTrello,
+  attachmentToCard,
+  getRecordIdAndAttachmentIdsFromCard,
 };

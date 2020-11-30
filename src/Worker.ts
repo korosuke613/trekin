@@ -72,6 +72,10 @@ export class Worker {
       case ActionType.COMMENT_CARD: {
         return this.commentCard();
       }
+      case ActionType.ADD_ATTACHMENT_TO_CARD: {
+        console.log("Add attachment to card");
+        return this.attachmentToCard();
+      }
     }
 
     return Promise.resolve({ app: "", record: {} });
@@ -115,6 +119,9 @@ export class Worker {
       case ActionType.COMMENT_CARD: {
         result.push(await this.addRecordIdToCardNameOfTrello());
         break;
+      }
+      case ActionType.ADD_ATTACHMENT_TO_CARD: {
+        result.push(await this.addRecordIdToCardNameOfTrello());
       }
     }
     return Promise.resolve(result);
@@ -470,6 +477,37 @@ export class Worker {
       this.apps.cards.id,
       recordId,
       doneTime
+    );
+  }
+
+  async getRecordIdAndAttachmentIdsFromCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const cardInfo = await ApiExecutor.getRecordIdAndAttachmentIdsFromCard(
+      client,
+      this.apps.cards.id,
+      this.trelloAction.data
+    );
+    if (cardInfo === undefined) {
+      throw new Error("Card is no such exists");
+    }
+
+    return cardInfo;
+  }
+
+  async attachmentToCard() {
+    const client = await this.kintoneClientCreator.createKintoneClient([
+      this.apps.cards.token,
+    ]);
+    const cardInfo = await this.getRecordIdAndAttachmentIdsFromCard();
+
+    return ApiExecutor.attachmentToCard(
+      client,
+      this.apps.cards.id,
+      this.trelloAction.data,
+      cardInfo.recordId,
+      cardInfo.attachmentsTableIds
     );
   }
 }

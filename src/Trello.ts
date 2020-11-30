@@ -11,6 +11,7 @@ export class ActionType {
   static readonly ADD_MEMBER_TO_CARD = "addMemberToCard";
   static readonly REMOVE_MEMBER_FROM_CARD = "removeMemberFromCard";
   static readonly COMMENT_CARD = "commentCard";
+  static readonly ADD_ATTACHMENT_TO_CARD = "addAttachmentToCard";
 }
 
 export interface Certificate {
@@ -50,6 +51,7 @@ export interface Data {
   board: Board;
   old: CardShort | ListShort;
   member: Member;
+  attachment: Attachment;
 }
 
 export interface Limits {}
@@ -62,6 +64,12 @@ export interface Card extends CardShort {
 export interface List extends ListShort {
   type: string;
   text: string;
+}
+
+export interface Attachment {
+  id: string;
+  name: string;
+  url: string;
 }
 
 export interface Label {
