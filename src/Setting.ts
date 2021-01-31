@@ -5,6 +5,7 @@ export interface Setting {
   excludes?: Array<{
     charactersOrLess?: number;
     match?: string;
+    descriptionKeyword?: string;
   }>;
   isAddDoneTime?: boolean;
   doneListName?: string;
@@ -42,6 +43,10 @@ export class SettingGuardian {
       return trelloAction.data.card.name.match(match) !== null;
     };
 
+    const isDescriptionKeyword = (descriptionKeyword: string) => {
+      return trelloAction.data.card.desc.includes(descriptionKeyword);
+    };
+
     let isSkip = false;
     for (const excludeSetting of excludes) {
       const checks: boolean[] = [];
@@ -52,6 +57,12 @@ export class SettingGuardian {
       }
       if (excludeSetting.match && trelloAction.data.card) {
         checks.push(isMatch(excludeSetting.match as string));
+      }
+
+      if (excludeSetting.descriptionKeyword && trelloAction.data.card) {
+        checks.push(
+          isDescriptionKeyword(excludeSetting.descriptionKeyword as string)
+        );
       }
 
       if (checks.length === 0) continue;
